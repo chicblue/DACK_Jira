@@ -67,7 +67,7 @@ export default function Register({ }: Props) {
 
 
 return (
-  <form className='container' onSubmit={registerFrm.handleSubmit}>
+  <form className='container' onSubmit={registerFrm.handleSubmit} >
     <div className='d-flex flex-column justify-content-center align-items-center' style={{ height: window.innerHeight }}>
       <h3 className='text-center '>Register</h3>
       <div className='d-flex' style={{ flexDirection: 'column' }}>
