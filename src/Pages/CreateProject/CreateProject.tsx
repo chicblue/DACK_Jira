@@ -59,7 +59,7 @@ export default function CreateProject({}: Props) {
         console.log('giatri',values)
         try{
           const res = await http.post("/api/Project/createProject", values);
-          alert('Khởi Tạo Dự Án Thành Công  ');
+          alert('Khởi Tạo Dự Án Thành Côngg  ');
          
           
   
