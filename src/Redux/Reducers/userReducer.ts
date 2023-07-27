@@ -1,9 +1,14 @@
 //rxslice
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { UserLoginFrm } from "../../Pages/Login/Login";
-import { getStoreJson, http, setStoreJson, USERLOGIN } from "../../Util/Config";
+import {
+  getStoreJson,
+  http,
+  httpNonAuth,
+  setStoreJson,
+  USERLOGIN,
+} from "../../Util/Config";
 import { history } from "../..";
-
 export interface UserLoginApi {
   email: "";
   password: "";
@@ -38,13 +43,12 @@ export default userReducer.reducer;
 // ------------------action asyn--------------
 export const loginAsynAction = createAsyncThunk(
   "loginAsynAction",
-
   async (userLogin: UserLoginFrm) => {
     try {
       const res = await http.post("/api/Users/signin", userLogin);
       setStoreJson(USERLOGIN, res.data.content);
       alert(res.data.message);
-      history.push("/indexjira");
+      history.push("/projectmanagement");
       return res.data.content;
     } catch (err) {
       alert(err.response?.data.message);

@@ -16,9 +16,9 @@ export default function SignUpInTemplate({}: Props) {
     <Space direction="vertical" style={{ width: '100%' }} size={[0, 48]}>
     <Layout>
       <Sider width={window.innerWidth/2} style={{height:window.innerHeight,backgroundImage:'url(https://picsum.photos/2000)'}}>
-       
+
         </Sider>
-     
+
         
         <Content >
             <Outlet></Outlet>
