@@ -15,6 +15,7 @@ import { store } from './Redux/configStore';
 import JiRaTemplate from './Templates/JiRaTemplate';
 import IndexJira from './Pages/Index/IndexJira';
 import CreateProject from './Pages/CreateProject/CreateProject';
+import ModalDrawer from './HOC/Modal/ModalDrawer';
 
 export const history:any = createBrowserHistory();
 const root = ReactDOM.createRoot(
@@ -22,6 +23,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
+    <ModalDrawer/>
   <HistoryRouter history={history}>
   <Routes>
   <Route path='' element={<SignUpInTemplate/>}>

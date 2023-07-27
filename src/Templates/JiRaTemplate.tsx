@@ -7,6 +7,7 @@ import MainInfo from '../Components/IndexJira/MainJira/MainInfo'
 import Menu from '../Components/IndexJira/Menu'
 import ModalJR from '../Components/IndexJira/Modal/ModalJR'
 import Sidebar from '../Components/IndexJira/Sidebar'
+
 type Props = {}
 
 export default function JiRaTemplate({}: Props) {
@@ -15,6 +16,7 @@ export default function JiRaTemplate({}: Props) {
     <div className="jira">
         <Sidebar/>
         <Menu/>
+        
         <Outlet></Outlet>
         <ModalJR/>
         
