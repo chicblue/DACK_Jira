@@ -43,6 +43,7 @@ export default function CreateProject({}: Props) {
       return <option value={item.id} key={index}>{item.projectCategoryName}</option>
     })
   }
+  
 
 
 
@@ -59,7 +60,7 @@ export default function CreateProject({}: Props) {
         console.log('giatri',values)
         try{
           const res = await http.post("/api/Project/createProject", values);
-          alert('Khởi Tạo Dự Án Thành Côngg  ');
+          alert('Khởi Tạo Dự Án Thành Công ');
          
           
   
@@ -84,7 +85,7 @@ export default function CreateProject({}: Props) {
         <div className='form-group'>
           <p>Description</p>
           <Editor
-            // value='description'
+           
             id="description"
             initialValue=""
             init={{

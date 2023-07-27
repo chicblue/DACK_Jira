@@ -9,14 +9,15 @@ import ModalJR from "../Components/IndexJira/Modal/ModalJR";
 import Sidebar from "../Components/IndexJira/Sidebar";
 type Props = {};
 
+
+
 export default function JiRaTemplate({}: Props) {
   return (
-    <>
-      <div className="jira">
-        <Sidebar />
-
-        <Menu></Menu>
-
+   <>
+    <div className="jira">
+        <Sidebar/>
+        <Menu/>
+        
         <Outlet></Outlet>
         <ModalJR />
       </div>
