@@ -8,11 +8,12 @@ export const store = configureStore({
         userReducer:userReducer,
         categoryReducer:categoryReducer,
     }
-});
 
 
+
+    });
 
 // lấy kiểu dữ liệu của store
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 
-export type DispatchType = typeof store.dispatch
+export type DispatchType = typeof store.dispatch;

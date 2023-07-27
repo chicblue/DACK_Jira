@@ -1,41 +1,57 @@
 //rxslice
-import { createSlice ,createAsyncThunk,PayloadAction} from '@reduxjs/toolkit'
-import { UserLoginFrm } from '../../Pages/Login/Login';
-import { getStoreJson, http, setStoreJson, USERLOGIN } from '../../Util/Config';
-
-
-export interface UserLoginApi{
-    email:'',
-    password:''
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { UserLoginFrm } from "../../Pages/Login/Login";
+import {
+  getStoreJson,
+  http,
+  httpNonAuth,
+  setStoreJson,
+  USERLOGIN,
+} from "../../Util/Config";
+import { history } from "../..";
+export interface UserLoginApi {
+  email: "";
+  password: "";
 }
 
 export interface UsersState {
-    userLogin :UserLoginApi | undefined
+  userLogin: UserLoginApi | undefined;
 }
-
 
 const initialState = {
-    userLogin: getStoreJson(USERLOGIN)
-}
+  userLogin: getStoreJson(USERLOGIN),
+};
 
 const userReducer = createSlice({
-  name: 'userReducer',
+  name: "userReducer",
   initialState,
   reducers: {},
-  extraReducers:(builder)=>{
-    builder.addCase(loginAsynAction.fulfilled,(state:UsersState,action:PayloadAction<UserLoginApi>)=>{
-        state.userLogin = action.payload
-    })
-  }
+  extraReducers: (builder) => {
+    builder.addCase(
+      loginAsynAction.fulfilled,
+      (state: UsersState, action: PayloadAction<UserLoginApi>) => {
+        state.userLogin = action.payload;
+      }
+    );
+  },
 });
 
-export const {} = userReducer.actions
+export const {} = userReducer.actions;
 
-export default userReducer.reducer
+export default userReducer.reducer;
 
 // ------------------action asyn--------------
-export const loginAsynAction = createAsyncThunk('loginAsynAction',async(userLogin:UserLoginFrm)=>{
-    const res = await http.post('/api/Users/signin',userLogin)
-    setStoreJson(USERLOGIN,res.data.content)
-    return res.data.content
-})
+export const loginAsynAction = createAsyncThunk(
+  "loginAsynAction",
+  async (userLogin: UserLoginFrm) => {
+    try {
+      const res = await http.post("/api/Users/signin", userLogin);
+      setStoreJson(USERLOGIN, res.data.content);
+      alert(res.data.message);
+      history.push("/projectmanagement");
+      return res.data.content;
+    } catch (err) {
+      alert(err.response?.data.message);
+    }
+  }
+);
