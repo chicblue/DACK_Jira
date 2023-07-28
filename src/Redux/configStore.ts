@@ -1,6 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit'
 import categoryReducer from './Reducers/categoryReducer';
 import drawerReducers from './Reducers/drawerReducers';
+import projectChangeReducers from './Reducers/projectChangeReducers';
+import projectReducer from './Reducers/projectReducer';
 import userReducer from './Reducers/userReducer';
 
 
@@ -9,6 +11,8 @@ export const store = configureStore({
         userReducer:userReducer,
         categoryReducer:categoryReducer,
         drawerReducers:drawerReducers,
+        projectReducer:projectReducer,
+        projectChangeReducers:projectChangeReducers,
     }
 
 

@@ -2,17 +2,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
-
 import { Button, Space } from "antd";
 import {
   Member,
   TypeProject,
   getAllProjectApi,
 } from "../../Redux/Reducers/projectReducer";
+import { drawerComponentContent, drawerOpenClose } from "../../Redux/Reducers/drawerReducers";
+import FormEdit from "../../Components/Form/FormEdit";
+import { actionEditProject } from "../../Redux/Reducers/projectChangeReducers";
 
 type Props = {};
 
 export default function Home({}: Props) {
+
+
+
+  
+    
+  
+
   const { arrProject } = useSelector(
     (state: RootState) => state.projectReducer
   );
@@ -56,6 +65,17 @@ export default function Home({}: Props) {
             <button
               className="btn btn-primary"
               style={{ width: 40, height: 40 }}
+              onClick={()=>{
+                 
+                    const actionDrawer = drawerOpenClose(true);
+                    const actionContent = drawerComponentContent(<FormEdit/>)
+                    const actionEdit = actionEditProject(project);
+                    dispatch(actionDrawer);
+                    dispatch(actionContent);
+                    dispatch(actionEdit);
+
+
+              }}
             >
               <i className="fa fa-edit"></i>
             </button>

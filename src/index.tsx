@@ -40,6 +40,9 @@ root.render(
     <Route path='' element ={<JiRaTemplate/>}>
       <Route path='/indexjira' element={<IndexJira/>}></Route>
       <Route path='/createproject' element={<CreateProject/>}></Route>
+      <Route path='/projectmanagement' element={<ProjectManagement/>}></Route>
+
+
       
 
     </Route>

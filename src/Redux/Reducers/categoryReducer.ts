@@ -36,5 +36,5 @@ export const categoryAsynAction = createAsyncThunk('categoryAsynAction',async()=
     
     return res.data.content
 })
-// createProjectAction
+
 

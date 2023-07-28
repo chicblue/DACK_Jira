@@ -38,7 +38,7 @@ export default function CreateProject({}: Props) {
     getDataCategory();
   }, [])
 
-  const renderCategory = (): JSX.Element[] => {
+    const renderCategory = (): JSX.Element[] => {
     return arrCategory.map((item: Category, index) => {
       return <option value={item.id} key={index}>{item.projectCategoryName}</option>
     })
