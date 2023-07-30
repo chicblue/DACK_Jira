@@ -79,7 +79,7 @@ const projectReducer = createSlice({
       state.notificationType = "success";
       notification.success({
         message: "Delete success",
-        description: action.payload, // Thông tin lấy từ payload nếu cần
+        description: action.payload.content,
       });
     });
 

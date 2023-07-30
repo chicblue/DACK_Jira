@@ -199,7 +199,7 @@ export default function Home({}: Props) {
         <Button onClick={clearAll}>Clear filters and sorters</Button>
       </Space>
       <Table columns={columns} dataSource={tableData} onChange={handleChange} />
-      <>
+      {/* <>
         {contextHolder}
         <Space>
           <Button onClick={() => openNotificationWithIcon("success")}>
@@ -213,7 +213,7 @@ export default function Home({}: Props) {
             Error
           </Button>
         </Space>
-      </>
+      </> */}
     </div>
   );
 }
