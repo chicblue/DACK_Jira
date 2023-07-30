@@ -17,6 +17,8 @@ import {
   resetError,
   resetIsDeletedSuccess,
 } from "../../Redux/Reducers/projectReducer";
+import { drawerComponentContent, drawerOpenClose, drawerTitle } from "../../Redux/Reducers/drawerReducers";
+import FormEdit from "../../Components/Form/FormEdit";
 
 interface DataType extends Omit<TypeProject, "members" | "creator"> {
   key: string;
@@ -122,9 +124,14 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  
   const handleEditClick = () => {
-    setIsEditPopupVisible(true);
+    const actionDrawer = drawerOpenClose(true);
+    const actionContent = drawerComponentContent(<FormEdit/>);
+    const actionTitle = drawerTitle('Edit Task');
+    dispatch(actionContent);
+    dispatch(actionTitle);
+    dispatch(actionDrawer);
   };
 
   console.log(arrProject);
