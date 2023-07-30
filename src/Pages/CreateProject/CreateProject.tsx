@@ -37,41 +37,35 @@ export default function CreateProject({}: Props) {
 
   const renderCategory = (): JSX.Element[] => {
     return arrCategory.map((item: Category, index) => {
-      return <option value={item.id} key={index}>{item.projectCategoryName}</option>
-    })
-  }
-  
+      return (
+        <option value={item.id} key={index}>
+          {item.projectCategoryName}
+        </option>
+      );
+    });
+  };
+  const createProjectFrm = useFormik<createProjectFrm>({
+    initialValues: {
+      projectName: "",
+      description: "",
+      categoryId: 0,
+      alias: "",
+    },
+    onSubmit: async (values: createProjectFrm) => {
+      console.log("giatri", values);
+      try {
+        const res = await http.post(
+          "api/Project/createProjectAuthorize",
+          values
+        );
+        alert("Khởi Tạo Dự Án Thành Công ");
 
-
-
- 
-
-  const createProjectFrm  = useFormik<createProjectFrm>({
-      initialValues:{
-        projectName: '',
-        description:'' ,
-        categoryId:0,
-        alias:'',
-      },
-      onSubmit:async(values:createProjectFrm)=>{
-        console.log('giatri',values)
-        try{
-          const res = await http.post("api/Project/createProjectAuthorize", values);
-          alert('Khởi Tạo Dự Án Thành Công ');
-         
-          history.push("/projectmanagement");
-  
-        }catch(err){
-          alert('Tên dự án đã được sử dụng');
-        }
-      },
-      
-      
-  })
-
-  
-
-
+        history.push("/projectmanagement");
+      } catch (err) {
+        alert("Tên dự án đã được sử dụng");
+      }
+    },
+  });
 
   return (
     <div className="container mt-5">
