@@ -1,5 +1,5 @@
 Chia Task:
-+Nguyễn Hoàng Phúc : Login , Register , Create Task
++Nguyễn Hoàng Phúc : Login , Register , Create Project,Create Task
 
 
-+Nguyễn Đình Thoại : projectmanagement , 
++Nguyễn Đình Thoại : projectmanagement , Edit Project ,Delete Project
