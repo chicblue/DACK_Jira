@@ -34,7 +34,9 @@ root.render(
   <HistoryRouter history={history}>
   <Routes>
   <Route path='' element={<SignUpInTemplate/>}>
-        <Route index path='/login' element={<Login/>}></Route>
+        <Route path='' element={<Login/>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
+
         <Route path='/register' element={<Register/>}></Route>
     </Route>
     <Route path='' element ={<JiRaTemplate/>}>

@@ -57,7 +57,7 @@ export default function FormCreateTask({ }: Props) {
 
     const handleEditorChange = (e: any) => {
 
-        createTaskFrm.setFieldValue('description2',e.target.getContent())
+        createTaskFrm.setFieldValue('description',e.target.getContent())
     }
     const getDataTaskType = async () => {
         const action: any = await getTaskTypeApi();
@@ -203,7 +203,7 @@ export default function FormCreateTask({ }: Props) {
                 <p>Description</p>
                 <Editor
 
-                    id="description"
+                    tagName='description'
                     initialValue=""
                     init={{
                         plugins: 'link image code',
