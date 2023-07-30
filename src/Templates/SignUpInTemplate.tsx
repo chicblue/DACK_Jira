@@ -15,7 +15,7 @@ export default function SignUpInTemplate({}: Props) {
     <>
     <Space direction="vertical" style={{ width: '100%' }} size={[0, 48]}>
     <Layout>
-      <Sider width={window.innerWidth/2} style={{height:window.innerHeight,backgroundImage:'url(https://picsum.photos/2000)'}}>
+      <Sider width={window.innerWidth/1.7} style={{height:window.innerHeight,backgroundImage:`url(${require('../assets/img/img/phuca.webp')})`,backgroundSize:'auto'}}>
 
         </Sider>
 
@@ -29,7 +29,7 @@ export default function SignUpInTemplate({}: Props) {
 
 
     </Space>
-    {/* <Outlet></Outlet> */}
+  
     
     </>
   )

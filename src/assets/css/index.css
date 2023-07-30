@@ -21,6 +21,7 @@
 
 .sideBar:hover {
   width: 15%;
+ 
 }
 
 .sideBar:hover .sideBar-top .sideBar-icon:first-child {
