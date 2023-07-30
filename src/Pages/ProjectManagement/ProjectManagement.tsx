@@ -28,8 +28,6 @@ type Props = {};
 type NotificationType = "success" | "info" | "warning" | "error";
 
 export default function Home({}: Props) {
-  const [api, contextHolder] = notification.useNotification();
-
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -104,7 +102,7 @@ export default function Home({}: Props) {
       key: "x",
       render: (_, record) => (
         <div>
-          <button className="btn btn-primary mx-2">
+          <button className="btn btn-primary mx-2" onClick={handleEditClick}>
             <i className="fa fa-edit"></i>
           </button>
           <button
@@ -124,6 +122,10 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
+  const [isEditPopupVisible, setIsEditPopupVisible] = useState(false);
+  const handleEditClick = () => {
+    setIsEditPopupVisible(true);
+  };
 
   console.log(arrProject);
 
