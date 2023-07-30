@@ -75,7 +75,7 @@ export default function Home({}: Props) {
               className="btn btn-primary"
               style={{ width: 40, height: 40 }}
               onClick={()=>{
-                 
+                    
                     const actionDrawer = drawerOpenClose(true);
                     const actionContent = drawerComponentContent(<FormEdit/>)
                     const actionEdit = actionEditProject(project);

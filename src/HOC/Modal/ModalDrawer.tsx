@@ -1,7 +1,6 @@
 import React from 'react'
-import { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space } from 'antd';
+
+import { Button, Drawer,  Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { DispatchType, RootState } from '../../Redux/configStore';
 import { drawerComponentContent, drawerOpenClose } from '../../Redux/Reducers/drawerReducers';
