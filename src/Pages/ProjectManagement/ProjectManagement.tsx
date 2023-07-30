@@ -1,100 +1,194 @@
-//
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
-
-import { Button, Space } from "antd";
+import { Button, Space, Table } from "antd";
+import type { TableProps } from "antd";
+import parse from "html-react-parser";
+import type {
+  ColumnsType,
+  FilterValue,
+  SorterResult,
+} from "antd/es/table/interface";
 import {
-  Member,
   TypeProject,
+  deleteProjectFromApi,
   getAllProjectApi,
+  resetError,
+  resetIsDeletedSuccess,
 } from "../../Redux/Reducers/projectReducer";
+
+interface DataType extends Omit<TypeProject, "members" | "creator"> {
+  key: string;
+  creator: string;
+  member: JSX.Element[];
+}
 
 type Props = {};
 
 export default function Home({}: Props) {
-  const { arrProject } = useSelector(
-    (state: RootState) => state.projectReducer
-  );
-  console.log(arrProject);
-  const handleGetProject = async () => {
-    const action: any = await getAllProjectApi();
-    dispatch(action);
+  const [filteredInfo, setFilteredInfo] = useState<
+    Record<string, FilterValue | null>
+  >({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<DataType>>({});
+  const [tableData, setTableData] = useState<DataType[]>([]);
+
+  const handleChange: TableProps<DataType>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    console.log("Various parameters", pagination, filters, sorter);
+    setFilteredInfo(filters);
+    setSortedInfo(sorter as SorterResult<DataType>);
   };
-  useEffect(() => {
-    handleGetProject();
-  }, []);
-  const dispatch: DispatchType = useDispatch();
-  const renderProject = (): JSX.Element[] => {
-    return arrProject.map((project: TypeProject, index) => {
-      return (
-        <tr key={index}>
-          <td>{project.id}</td>
-          <td className="text-primary">{project.projectName}</td>
-          <td>{project.categoryName}</td>
-          <td>
-            <Button type="primary" ghost className="text-success">
-              {project.creator.name}
-            </Button>
-          </td>
-          <td className="d-flex">
-            {project.members.map((member: Member, index) => {
-              return (
-                <div key={index}>
-                  <img
-                    src={member.avatar}
-                    alt=""
-                    width={30}
-                    height={30}
-                    className="rounded-circle"
-                  />
-                </div>
-              );
-            })}
-          </td>
-          <td>
-            <button
-              className="btn btn-primary"
-              style={{ width: 40, height: 40 }}
-            >
-              <i className="fa fa-edit"></i>
-            </button>
-            <button
-              className="btn btn-danger"
-              style={{ width: 40, height: 40 }}
-            >
-              <i className="fa fa-trash-alt"></i>
-            </button>
-          </td>
-        </tr>
-      );
+
+  const clearFilters = () => {
+    setFilteredInfo({});
+  };
+
+  const clearAll = () => {
+    setFilteredInfo({});
+    setSortedInfo({});
+  };
+
+  const setAgeSort = () => {
+    setSortedInfo({
+      order: "descend",
+      columnKey: "id",
     });
   };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
+      sorter: (a, b) => a.id - b.id,
+      sortOrder: sortedInfo.columnKey === "id" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Project Name",
+      dataIndex: "projectName",
+      key: "projectName",
+      // filters: [
+      //   { text: "Joe", value: "Joe" },
+      //   { text: "Jim", value: "Jim" },
+      // ],
+      // filteredValue: filteredInfo.projectName || null,
+      // onFilter: (value, record) => record.projectName.includes(value),
+      ellipsis: true,
+      render: (text, record) => <div className="text-primary">{text}</div>,
+    },
+    {
+      title: "Category",
+      dataIndex: "categoryName",
+      key: "category",
+      // sorter: (a, b) => a.categoryName.localeCompare(b.categoryName),
+      // sortOrder: sortedInfo.columnKey === "category" ? sortedInfo.order : null,
+      ellipsis: true,
+    },
+    {
+      title: "Creator",
+      dataIndex: "creator",
+      key: "creator",
+      // filters: [
+      //   { text: "London", value: "London" },
+      //   { text: "New York", value: "New York" },
+      // ],
+      // filteredValue: filteredInfo.creator || null,
+      // onFilter: (value, record) => record.creator.includes(value),
+      ellipsis: true,
+      render: (text) => <div className=" btn btn-outline-success">{text}</div>,
+    },
+    {
+      title: "Member",
+      dataIndex: "member",
+      key: "member",
+      ellipsis: true,
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (_, record) => (
+        <div>
+          <button className="btn btn-primary mx-2">
+            <i className="fa fa-edit"></i>
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => {
+              handleDeleteProject(record.id);
+            }}
+          >
+            <i className="fa fa-trash"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  const dispatch: DispatchType = useDispatch();
+
+  const { arrProject, isDeletedSuccess, error } = useSelector(
+    (state: RootState) => state.projectReducer
+  );
+
+  console.log(arrProject);
+
+  useEffect(() => {
+    dispatch(getAllProjectApi());
+  }, []);
+
+  useEffect(() => {
+    if (arrProject.length > 0) {
+      // Chuyển đổi dữ liệu từ arrProject thành định dạng DataType[] phù hợp cho Table
+      const convertedData: any = arrProject.map((project) => ({
+        key: project.id.toString(),
+        id: project.id,
+        projectName: project.projectName,
+        categoryName: project.categoryName,
+        creator: project.creator.name,
+        member: project.members.map((member) => (
+          <img
+            key={member.userId.toString()}
+            src={member.avatar}
+            alt=""
+            width={30}
+            height={30}
+            className="rounded-circle"
+          />
+        )),
+        description: project.description,
+      }));
+      setTableData(convertedData);
+    }
+  }, [arrProject]);
+  const handleDeleteProject = (projectId: number) => {
+    dispatch(deleteProjectFromApi(projectId));
+  };
+
+  useEffect(() => {
+    if (isDeletedSuccess) {
+      alert("Xóa thành công");
+      dispatch(resetIsDeletedSuccess()); // Reset isDeletedSuccess về false
+    }
+  }, [isDeletedSuccess]);
+  useEffect(() => {
+    if (error) {
+      alert("Lỗi xảy ra khi xóa dự án: " + error);
+      dispatch(resetError()); // Reset error về null
+    }
+  }, [error]);
   return (
-    <div className="container home">
-      <div className="home__title">
-        <h1>Project management</h1>
-        <div className="home__title-button">
-          <button className="btn">Sort age</button>
-          <button className="btn">Clear fillters</button>
-          <button className="btn">Clear fillters and sorters</button>
-        </div>
-        <div className="home__projects">
-          <table className="home__projects-list table">
-            <tbody>
-              <tr>
-                <th>ID</th>
-                <th>Project name</th>
-                <th>Category</th>
-                <th>Creator</th>
-                <th>Members</th>
-                <th>Actions</th>
-              </tr>
-              {renderProject()}
-            </tbody>
-          </table>
-        </div>
-      </div>
+    <div className="container">
+      <Space style={{ marginBottom: 16 }}>
+        <Button onClick={setAgeSort}>Sort by ID</Button>
+        <Button onClick={clearFilters}>Clear filters</Button>
+        <Button onClick={clearAll}>Clear filters and sorters</Button>
+      </Space>
+      <Table columns={columns} dataSource={tableData} onChange={handleChange} />
     </div>
   );
 }
