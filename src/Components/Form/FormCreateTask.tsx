@@ -57,7 +57,7 @@ export default function FormCreateTask({ }: Props) {
 
     const handleEditorChange = (e: any) => {
 
-        createTaskFrm.setFieldValue('description',e.target.getContent())
+        createTaskFrm.setFieldValue('description2',e.target.getContent())
     }
     const getDataTaskType = async () => {
         const action: any = await getTaskTypeApi();

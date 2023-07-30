@@ -1,10 +1,16 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { DispatchType, RootState } from "../configStore";
-import { http, httpNonAuth } from "../../Util/Config";
-
+import { notification } from "antd";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { http } from "../../Util/Config";
+import { AxiosResponse } from "axios";
+export type NotificationType = "success" | "info" | "warning" | "error";
 const initialState: ProjectState = {
   arrProject: [],
+  isDeletedSuccess: false,
+  error: null,
+  currentUser: null,
+  notificationType: null,
 };
+
 export interface TypeProject {
   members: Member[];
   creator: Creator;
@@ -18,6 +24,10 @@ export interface TypeProject {
 }
 export interface ProjectState {
   arrProject: TypeProject[];
+  isDeletedSuccess: boolean;
+  error: string | null;
+  currentUser: null;
+  notificationType: NotificationType | null;
 }
 export interface Creator {
   id: number;
@@ -29,27 +39,101 @@ export interface Member {
   name: string;
   avatar: string;
 }
+interface DeleteProjectResponse {
+  statusCode: number;
+  message: string;
+  content: string;
+  dateTime: string;
+}
 const projectReducer = createSlice({
   name: "projectReducer",
   initialState,
   reducers: {
-    getAllProject: (
-      state: ProjectState,
-      action: PayloadAction<TypeProject[]>
-    ) => {
-      state.arrProject = action.payload;
+    resetIsDeletedSuccess: (state) => {
+      state.isDeletedSuccess = false;
+    },
+    resetError: (state) => {
+      state.error = null;
+    },
+    setNotificationType: (state, action: PayloadAction<NotificationType>) => {
+      state.notificationType = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(
+      getAllProjectApi.fulfilled,
+      (state: ProjectState, action: PayloadAction<TypeProject[]>) => {
+        state.arrProject = action.payload;
+        state.error = null; // Reset lỗi nếu có
+      }
+    );
+    builder.addCase(
+      getAllProjectApi.rejected,
+      (state: ProjectState, action) => {
+        state.error = action.error.message; // Ghi nhận lỗi vào state
+      }
+    );
+    builder.addCase(deleteProjectFromApi.fulfilled, (state, action) => {
+      state.isDeletedSuccess = true;
+      state.error = null;
+      state.notificationType = "success";
+      notification.success({
+        message: "Delete success",
+        // Thông tin lấy từ payload nếu cần
+      });
+    });
+
+    builder.addCase(deleteProjectFromApi.rejected, (state, action) => {
+      state.error = action.payload ?? action.error.message;
+      state.isDeletedSuccess = false;
+      state.notificationType = "error";
+      notification.error({
+        message: "Delete failed",
+        description: action.payload ?? action.error.message,
+      });
+    });
+  },
 });
-export const { getAllProject } = projectReducer.actions;
+export const { resetIsDeletedSuccess, resetError, setNotificationType } =
+  projectReducer.actions;
 
 export default projectReducer.reducer;
 
-export const getAllProjectApi = () => {
-  return async (dispatch: DispatchType) => {
-    const res = await http.get("api/Project/getAllProject");
-    const action = getAllProject(res.data.content);
-    dispatch(action);
-  };
-};
 
+
+export const getAllProjectApi = createAsyncThunk(
+  "project/getAllProjectApi",
+  async () => {
+    try {
+      const res = await http.get("api/Project/getAllProject");
+      return res.data.content;
+    } catch (error) {
+      console.error("Error fetching projects: " + error.message);
+      throw new Error(error.message); // Ghi nhận lỗi để xử lý ở component
+    }
+  }
+);
+
+export const deleteProjectFromApi = createAsyncThunk<
+  DeleteProjectResponse,
+  number,
+  { rejectValue: string }
+>("project/deleteProject", async (projectId, thunkAPI) => {
+  const apiUrl = `https://jiranew.cybersoft.edu.vn/api/Project/deleteProject?projectId=${projectId}`;
+
+  try {
+    const response: AxiosResponse<DeleteProjectResponse> = await http.delete(
+      apiUrl
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      // Xử lý lỗi khi dự án không thuộc quyền sở hữu của người dùng
+      return thunkAPI.rejectWithValue(error.response.data.content);
+    } else {
+      return thunkAPI.rejectWithValue(
+        "Error deleting project: " + error.message
+      );
+    }
+  }
+});
