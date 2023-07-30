@@ -8,7 +8,7 @@ import { drawerComponentContent, drawerOpenClose } from '../../Redux/Reducers/dr
 type Props = {}
 
 export default function ModalDrawer({}: Props) {
-    const {visible,componentCotent,callBackSubmit} = useSelector((state: RootState) => state.drawerReducers);
+    const {visible,componentCotent,callBackSubmit,title} = useSelector((state: RootState) => state.drawerReducers);
     
     const dispatch:DispatchType = useDispatch();
 
@@ -23,7 +23,7 @@ export default function ModalDrawer({}: Props) {
       <>
       
         <Drawer
-          title="Create a new account"
+          title={title}
           width={720}
           onClose={onClose}
           visible={visible}

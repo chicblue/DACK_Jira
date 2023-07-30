@@ -1,8 +1,15 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { DispatchType } from '../../Redux/configStore';
+import { drawerComponentContent, drawerOpenClose, drawerTitle } from '../../Redux/Reducers/drawerReducers'
+import FormCreateTask from '../Form/FormCreateTask'
 
 type Props = {}
 
 export default function Sidebar({}: Props) {
+  
+  const dispatch: DispatchType = useDispatch();
+
   return (
     <div className="sideBar">
     <div className="sideBar-top">
@@ -11,11 +18,18 @@ export default function Sidebar({}: Props) {
       </div>
       <div className="sideBar-icon" data-toggle="modal" data-target="#searchModal" style={{cursor: 'pointer'}}>
         <i className="fa fa-search" />
-        <span className="title">SEARCH ISSUES</span>
+        <span className="title" >Search Issues</span>
       </div>
-      <div className="sideBar-icon">
+      <div className="sideBar-icon" style={{cursor: 'pointer'}}>
         <i className="fa fa-plus" />
-        <span className="title">CREATE ISSUES</span>
+        <span className="title" onClick={()=>{
+            const actionDrawer = drawerOpenClose(true);
+            const actionContent = drawerComponentContent(<FormCreateTask/>);
+            const actionTitle = drawerTitle('Create Task');
+            dispatch(actionContent);
+            dispatch(actionTitle);
+            dispatch(actionDrawer);
+        }}>Create Task</span>
       </div>
     </div>
     <div className="sideBar-bottom">

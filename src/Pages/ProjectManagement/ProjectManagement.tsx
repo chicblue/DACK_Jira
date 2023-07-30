@@ -8,19 +8,13 @@ import {
   TypeProject,
   getAllProjectApi,
 } from "../../Redux/Reducers/projectReducer";
-import { drawerComponentContent, drawerOpenClose } from "../../Redux/Reducers/drawerReducers";
+import { drawerComponentContent, drawerOpenClose, drawerTitle } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { actionEditProject } from "../../Redux/Reducers/projectChangeReducers";
 
 type Props = {};
 
 export default function Home({}: Props) {
-
-
-
-  
-    
-  
 
   const { arrProject } = useSelector(
     (state: RootState) => state.projectReducer
@@ -70,9 +64,11 @@ export default function Home({}: Props) {
                     const actionDrawer = drawerOpenClose(true);
                     const actionContent = drawerComponentContent(<FormEdit/>)
                     const actionEdit = actionEditProject(project);
+                    const actionTitle = drawerTitle('Edit Project');
                     dispatch(actionDrawer);
                     dispatch(actionContent);
                     dispatch(actionEdit);
+                    dispatch(actionTitle);
 
 
               }}

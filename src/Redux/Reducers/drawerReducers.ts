@@ -5,14 +5,14 @@ import FormEdit from '../../Components/Form/FormEdit';
 export interface DrawerState{
     visible:boolean,
     componentCotent: any,
-    callBackSubmit:any
+    callBackSubmit:any,
+    title:string
 }
 const initialState :DrawerState= {
     visible:false,
     componentCotent: '',
-    callBackSubmit:():void=>{alert('demo')
-
-    }
+    callBackSubmit:():void=>{alert('demo')},
+    title:'',
 }
 
 const drawerReducers = createSlice({
@@ -27,10 +27,14 @@ const drawerReducers = createSlice({
     },
     drawerCallBackSubmit:(state:DrawerState,action:PayloadAction<any>)=>{
       state.callBackSubmit=action.payload
-  }
+  },
+    drawerTitle:(state:DrawerState,action:PayloadAction<string>)=>{
+      state.title=action.payload
+
+    }
   }
 });
 
-export const {drawerOpenClose,drawerComponentContent,drawerCallBackSubmit} = drawerReducers.actions
+export const {drawerOpenClose,drawerComponentContent,drawerCallBackSubmit,drawerTitle} = drawerReducers.actions
 
 export default drawerReducers.reducer

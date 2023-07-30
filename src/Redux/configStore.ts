@@ -1,5 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit'
 import categoryReducer from './Reducers/categoryReducer';
+import createTaskReducer from './Reducers/createTaskReducer';
 import drawerReducers from './Reducers/drawerReducers';
 import projectChangeReducers from './Reducers/projectChangeReducers';
 import projectReducer from './Reducers/projectReducer';
@@ -13,6 +14,7 @@ export const store = configureStore({
         drawerReducers:drawerReducers,
         projectReducer:projectReducer,
         projectChangeReducers:projectChangeReducers,
+        createTaskReducer:createTaskReducer,
     }
 
 
