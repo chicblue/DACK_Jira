@@ -59,7 +59,7 @@ export default function CreateProject({}: Props) {
       onSubmit:async(values:createProjectFrm)=>{
         console.log('giatri',values)
         try{
-          const res = await http.post("/api/Project/createProject", values);
+          const res = await http.post("api/Project/createProjectAuthorize", values);
           alert('Khởi Tạo Dự Án Thành Công ');
          
           
