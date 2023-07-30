@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { clearStore, USERLOGIN } from "../../Util/Config";
 
 type Props = {};
 
@@ -79,6 +80,17 @@ export default function Menu({}: Props) {
         <div>
           <i className="fa fa-box" />
           <span>Components</span>
+        </div>
+        <div>
+        <a
+              className="btn btn-outline-secondary"
+              onClick={() => {
+                clearStore(USERLOGIN);
+                window.location.reload(); //F5
+              }}
+            >
+              <i className="fa fa-sign-in"></i> Logout
+            </a>
         </div>
       </div>
     </div>
