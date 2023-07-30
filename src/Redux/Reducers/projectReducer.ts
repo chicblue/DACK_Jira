@@ -109,9 +109,7 @@ export const deleteProjectFromApi = createAsyncThunk<
   } catch (error) {
     if (error.response && error.response.status === 403) {
       // Xử lý lỗi khi dự án không thuộc quyền sở hữu của người dùng
-      return thunkAPI.rejectWithValue(
-        "Không thể xóa dự án: " + error.response.data.content
-      );
+      return thunkAPI.rejectWithValue(error.response.data.content);
     } else {
       return thunkAPI.rejectWithValue(
         "Error deleting project: " + error.message

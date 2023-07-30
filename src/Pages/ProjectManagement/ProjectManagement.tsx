@@ -177,7 +177,7 @@ export default function Home({}: Props) {
   }, [isDeletedSuccess]);
   useEffect(() => {
     if (error) {
-      alert("Lỗi xảy ra khi xóa dự án: " + error);
+      alert(error);
       dispatch(resetError()); // Reset error về null
     }
   }, [error]);
