@@ -1,12 +1,14 @@
+import { notification } from "antd";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { http } from "../../Util/Config";
 import { AxiosResponse } from "axios";
-
+export type NotificationType = "success" | "info" | "warning" | "error";
 const initialState: ProjectState = {
   arrProject: [],
   isDeletedSuccess: false,
   error: null,
   currentUser: null,
+  notificationType: null,
 };
 
 export interface TypeProject {
@@ -25,6 +27,7 @@ export interface ProjectState {
   isDeletedSuccess: boolean;
   error: string | null;
   currentUser: null;
+  notificationType: NotificationType | null;
 }
 export interface Creator {
   id: number;
@@ -52,6 +55,9 @@ const projectReducer = createSlice({
     resetError: (state) => {
       state.error = null;
     },
+    setNotificationType: (state, action: PayloadAction<NotificationType>) => {
+      state.notificationType = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -70,14 +76,26 @@ const projectReducer = createSlice({
     builder.addCase(deleteProjectFromApi.fulfilled, (state, action) => {
       state.isDeletedSuccess = true;
       state.error = null;
+      state.notificationType = "success";
+      notification.success({
+        message: "Delete success",
+        description: action.payload, // Thông tin lấy từ payload nếu cần
+      });
     });
 
     builder.addCase(deleteProjectFromApi.rejected, (state, action) => {
       state.error = action.payload ?? action.error.message;
+      state.isDeletedSuccess = false;
+      state.notificationType = "error";
+      notification.error({
+        message: "Delete failed",
+        description: action.payload ?? action.error.message,
+      });
     });
   },
 });
-export const { resetIsDeletedSuccess, resetError } = projectReducer.actions;
+export const { resetIsDeletedSuccess, resetError, setNotificationType } =
+  projectReducer.actions;
 
 export default projectReducer.reducer;
 

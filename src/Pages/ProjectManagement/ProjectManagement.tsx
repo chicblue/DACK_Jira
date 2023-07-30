@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
-import { Button, Space, Table } from "antd";
+import { Button, Space, Table, notification } from "antd";
 import type { TableProps } from "antd";
 import parse from "html-react-parser";
 import type {
@@ -24,8 +24,18 @@ interface DataType extends Omit<TypeProject, "members" | "creator"> {
 }
 
 type Props = {};
+type NotificationType = "success" | "info" | "warning" | "error";
 
 export default function Home({}: Props) {
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = (type: NotificationType) => {
+    api[type]({
+      message: "Notification Title",
+      description:
+        "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+    });
+  };
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -177,7 +187,7 @@ export default function Home({}: Props) {
   }, [isDeletedSuccess]);
   useEffect(() => {
     if (error) {
-      alert(error);
+      // alert(error);
       dispatch(resetError()); // Reset error về null
     }
   }, [error]);
@@ -189,6 +199,21 @@ export default function Home({}: Props) {
         <Button onClick={clearAll}>Clear filters and sorters</Button>
       </Space>
       <Table columns={columns} dataSource={tableData} onChange={handleChange} />
+      <>
+        {contextHolder}
+        <Space>
+          <Button onClick={() => openNotificationWithIcon("success")}>
+            Success
+          </Button>
+          <Button onClick={() => openNotificationWithIcon("info")}>Info</Button>
+          <Button onClick={() => openNotificationWithIcon("warning")}>
+            Warning
+          </Button>
+          <Button onClick={() => openNotificationWithIcon("error")}>
+            Error
+          </Button>
+        </Space>
+      </>
     </div>
   );
 }
