@@ -80,6 +80,7 @@ const projectReducer = createSlice({
       notification.success({
         message: "Delete success",
         // Thông tin lấy từ payload nếu cần
+        description: action.payload.content,
       });
     });
 
