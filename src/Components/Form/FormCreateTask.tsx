@@ -42,7 +42,7 @@ export default function FormCreateTask({ }: Props) {
     const { arrProject } = useSelector(
         (state: RootState) => state.projectReducer
     );
-    const { arrTaskType, arrPriority, arrUser } = useSelector(
+    const {arrTaskType,arrPriority,arrUser} = useSelector(
         (state: RootState) => state.createTaskReducer
     );
     const userOptions = arrUser.map((item, index) => {
