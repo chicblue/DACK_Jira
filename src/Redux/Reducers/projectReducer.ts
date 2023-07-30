@@ -9,6 +9,7 @@ const initialState: ProjectState = {
   error: null,
   currentUser: null,
   notificationType: null,
+  deleteSuccessMessage: "", // Thêm trạng thái lưu thông báo thành công
 };
 
 export interface TypeProject {
@@ -28,6 +29,7 @@ export interface ProjectState {
   error: string | null;
   currentUser: null;
   notificationType: NotificationType | null;
+  deleteSuccessMessage: string | null;
 }
 export interface Creator {
   id: number;
@@ -58,6 +60,9 @@ const projectReducer = createSlice({
     setNotificationType: (state, action: PayloadAction<NotificationType>) => {
       state.notificationType = action.payload;
     },
+    setDeleteSuccessMessage: (state, action: PayloadAction<string>) => {
+      state.deleteSuccessMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -75,13 +80,9 @@ const projectReducer = createSlice({
     );
     builder.addCase(deleteProjectFromApi.fulfilled, (state, action) => {
       state.isDeletedSuccess = true;
+      state.deleteSuccessMessage = action.payload.message; // Lưu thông báo thành công
       state.error = null;
       state.notificationType = "success";
-      notification.success({
-        message: "Delete success",
-        // Thông tin lấy từ payload nếu cần
-        description: action.payload.content,
-      });
     });
 
     builder.addCase(deleteProjectFromApi.rejected, (state, action) => {
@@ -95,12 +96,14 @@ const projectReducer = createSlice({
     });
   },
 });
-export const { resetIsDeletedSuccess, resetError, setNotificationType } =
-  projectReducer.actions;
+export const {
+  resetIsDeletedSuccess,
+  resetError,
+  setNotificationType,
+  setDeleteSuccessMessage,
+} = projectReducer.actions;
 
 export default projectReducer.reducer;
-
-
 
 export const getAllProjectApi = createAsyncThunk(
   "project/getAllProjectApi",

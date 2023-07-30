@@ -16,11 +16,7 @@ import {
   getAllProjectApi,
   resetError,
   resetIsDeletedSuccess,
-  Member,
 } from "../../Redux/Reducers/projectReducer";
-import { drawerComponentContent, drawerOpenClose, drawerTitle } from "../../Redux/Reducers/drawerReducers";
-import FormEdit from "../../Components/Form/FormEdit";
-import { actionEditProject } from "../../Redux/Reducers/projectChangeReducers";
 
 interface DataType extends Omit<TypeProject, "members" | "creator"> {
   key: string;
@@ -32,83 +28,8 @@ type Props = {};
 type NotificationType = "success" | "info" | "warning" | "error";
 
 export default function Home({}: Props) {
-
-
-  ;
-  const handleGetProject = async () => {
-    const action: any = await getAllProjectApi();
-    dispatch(action);
-  };
-  useEffect(() => {
-    handleGetProject();
-  }, []);
-
-  const renderProject = (): JSX.Element[] => {
-    return arrProject.map((project: TypeProject, index) => {
-      return (
-        <tr key={index}>
-          <td>{project.id}</td>
-          <td className="text-primary">{project.projectName}</td>
-          <td>{project.categoryName}</td>
-          <td>
-            <Button type="primary" ghost className="text-success">
-              {project.creator.name}
-            </Button>
-          </td>
-          <td className="d-flex">
-            {project.members.map((member: Member, index) => {
-              return (
-                <div key={index}>
-                  <img
-                    src={member.avatar}
-                    alt=""
-                    width={30}
-                    height={30}
-                    className="rounded-circle"
-                  />
-                </div>
-              );
-            })}
-          </td>
-          <td>
-            <button
-              className="btn btn-primary"
-              style={{ width: 40, height: 40 }}
-              onClick={()=>{
-                    
-                    const actionDrawer = drawerOpenClose(true);
-                    const actionContent = drawerComponentContent(<FormEdit/>)
-                    const actionEdit = actionEditProject(project);
-                    const actionTitle = drawerTitle('Edit Project');
-                    dispatch(actionDrawer);
-                    dispatch(actionContent);
-                    dispatch(actionEdit);
-                    dispatch(actionTitle);
-
-
-              }}
-            >
-              <i className="fa fa-edit"></i>
-            </button>
-            <button
-              className="btn btn-danger"
-              style={{ width: 40, height: 40 }}
-            >
-              <i className="fa fa-trash-alt"></i>
-            </button>
-          </td>
-        </tr>
-      );
-            })}          
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = (type: NotificationType) => {
-    api[type]({
-      message: "Notification Title",
-      description:
-        "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
-    });
-  };
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -154,12 +75,7 @@ export default function Home({}: Props) {
       title: "Project Name",
       dataIndex: "projectName",
       key: "projectName",
-      // filters: [
-      //   { text: "Joe", value: "Joe" },
-      //   { text: "Jim", value: "Jim" },
-      // ],
-      // filteredValue: filteredInfo.projectName || null,
-      // onFilter: (value, record) => record.projectName.includes(value),
+
       ellipsis: true,
       render: (text, record) => <div className="text-primary">{text}</div>,
     },
@@ -167,20 +83,12 @@ export default function Home({}: Props) {
       title: "Category",
       dataIndex: "categoryName",
       key: "category",
-      // sorter: (a, b) => a.categoryName.localeCompare(b.categoryName),
-      // sortOrder: sortedInfo.columnKey === "category" ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
       title: "Creator",
       dataIndex: "creator",
       key: "creator",
-      // filters: [
-      //   { text: "London", value: "London" },
-      //   { text: "New York", value: "New York" },
-      // ],
-      // filteredValue: filteredInfo.creator || null,
-      // onFilter: (value, record) => record.creator.includes(value),
       ellipsis: true,
       render: (text) => <div className=" btn btn-outline-success">{text}</div>,
     },
@@ -214,19 +122,22 @@ export default function Home({}: Props) {
 
   const dispatch: DispatchType = useDispatch();
 
-  const { arrProject, isDeletedSuccess, error } = useSelector(
-    (state: RootState) => state.projectReducer
-  );
+  const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
+    useSelector((state: RootState) => state.projectReducer);
 
   console.log(arrProject);
 
+  const handleGetProject = async () => {
+    const action: any = await getAllProjectApi();
+    dispatch(action);
+  };
+
   useEffect(() => {
-    dispatch(getAllProjectApi());
-  }, []);
+    handleGetProject();
+  }, [isDeletedSuccess]);
 
   useEffect(() => {
     if (arrProject.length > 0) {
-      // Chuyển đổi dữ liệu từ arrProject thành định dạng DataType[] phù hợp cho Table
       const convertedData: any = arrProject.map((project) => ({
         key: project.id.toString(),
         id: project.id,
@@ -253,11 +164,15 @@ export default function Home({}: Props) {
   };
 
   useEffect(() => {
-    if (isDeletedSuccess) {
-      alert("Xóa thành công");
-      dispatch(resetIsDeletedSuccess()); // Reset isDeletedSuccess về false
+    if (isDeletedSuccess && deleteSuccessMessage) {
+      notification.success({
+        message: "Delete success",
+        description: deleteSuccessMessage,
+      });
+
+      dispatch(resetIsDeletedSuccess());
     }
-  }, [isDeletedSuccess]);
+  }, [isDeletedSuccess, deleteSuccessMessage]);
   useEffect(() => {
     if (error) {
       // alert(error);
@@ -272,22 +187,6 @@ export default function Home({}: Props) {
         <Button onClick={clearAll}>Clear filters and sorters</Button>
       </Space>
       <Table columns={columns} dataSource={tableData} onChange={handleChange} />
-      {/* <>
-        {contextHolder}
-        <Space>
-          <Button onClick={() => openNotificationWithIcon("success")}>
-            Success
-          </Button>
-          <Button onClick={() => openNotificationWithIcon("info")}>Info</Button>
-          <Button onClick={() => openNotificationWithIcon("warning")}>
-            Warning
-          </Button>
-          <Button onClick={() => openNotificationWithIcon("error")}>
-            Error
-          </Button>
-        </Space>
-      </> */}
     </div>
   );
-  }
-
+}
