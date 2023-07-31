@@ -18,6 +18,7 @@ import {
   resetIsDeletedSuccess,
 } from "../../Redux/Reducers/projectReducer";
 import {
+  ProjectDetail,
   drawerComponentContent,
   drawerOpenClose,
   drawerProjectDetail,
@@ -140,7 +141,7 @@ export default function Home({}: Props) {
       const response = await http.get(
         `/api/Project/getProjectDetail?id=${projectId}`
       );
-      const projectDetail = response.data.content;
+      const projectDetail: ProjectDetail = response.data.content;
       console.log(projectDetail);
       if (projectDetail) {
         const actionDrawer = drawerOpenClose(true);

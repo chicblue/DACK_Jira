@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import React from "react";
 import FormEdit from "../../Components/Form/FormEdit";
+import { Creator, Member } from "./projectReducer";
 
 export interface DrawerState {
   visible: boolean;
@@ -18,14 +19,16 @@ const initialState: DrawerState = {
   title: "",
   projectDetail: null,
 };
-interface ProjectDetail {
+export interface ProjectDetail {
+  members: Member[];
+  creator: Creator;
   id: number;
   projectName: string;
   description: string;
   categoryId: number;
   categoryName: string;
   alias: string;
-  // Các thuộc tính khác liên quan đến ProjectDetail
+  deleted: boolean;
 }
 const drawerReducers = createSlice({
   name: "drawerReducers",
