@@ -53,7 +53,7 @@ export const updateAsynAction = createAsyncThunk(
         values
       );
       alert(res.data.message);
-
+      window.location.reload();
       return res.data.content;
     } catch (error) {
       if (error.response && error.response.status === 403) {
