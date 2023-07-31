@@ -4,4 +4,4 @@ Chia Task:
 
 +Nguyễn Đình Thoại : projectmanagement , Edit Project ,Delete Project
 
-+link Deloy :https://jira-project-ck.surge.sh/
++link Deloy :https://jira-project-dack.surge.sh/
