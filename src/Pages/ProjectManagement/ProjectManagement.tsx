@@ -17,8 +17,14 @@ import {
   resetError,
   resetIsDeletedSuccess,
 } from "../../Redux/Reducers/projectReducer";
-import { drawerComponentContent, drawerOpenClose, drawerTitle } from "../../Redux/Reducers/drawerReducers";
+import {
+  drawerComponentContent,
+  drawerOpenClose,
+  drawerProjectDetail,
+  drawerTitle,
+} from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
+import { http } from "../../Util/Config";
 
 interface DataType extends Omit<TypeProject, "members" | "creator"> {
   key: string;
@@ -27,7 +33,6 @@ interface DataType extends Omit<TypeProject, "members" | "creator"> {
 }
 
 type Props = {};
-type NotificationType = "success" | "info" | "warning" | "error";
 
 export default function Home({}: Props) {
   const [filteredInfo, setFilteredInfo] = useState<
@@ -104,7 +109,13 @@ export default function Home({}: Props) {
       key: "x",
       render: (_, record) => (
         <div>
-          <button className="btn btn-primary mx-2" onClick={handleEditClick}>
+          <button
+            className="btn btn-primary mx-2"
+            onClick={() => {
+              handleEditClick(record.id);
+              console.log(record.id);
+            }}
+          >
             <i className="fa fa-edit"></i>
           </button>
           <button
@@ -124,17 +135,25 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-  
-  const handleEditClick = () => {
-    const actionDrawer = drawerOpenClose(true);
-    const actionContent = drawerComponentContent(<FormEdit/>);
-    const actionTitle = drawerTitle('Edit Task');
-    dispatch(actionContent);
-    dispatch(actionTitle);
-    dispatch(actionDrawer);
+  const handleEditClick = async (projectId: number) => {
+    try {
+      const response = await http.get(
+        `/api/Project/getProjectDetail?id=${projectId}`
+      );
+      const projectDetail = response.data.content;
+      console.log(projectDetail);
+      if (projectDetail) {
+        const actionDrawer = drawerOpenClose(true);
+        const actionContent = drawerComponentContent(<FormEdit />);
+        const actionTitle = drawerTitle("Edit Task");
+        const actionProjectDetail = drawerProjectDetail(projectDetail);
+        dispatch(actionContent);
+        dispatch(actionTitle);
+        dispatch(actionDrawer);
+        dispatch(actionProjectDetail);
+      }
+    } catch (error) {}
   };
-
-  console.log(arrProject);
 
   const handleGetProject = async () => {
     const action: any = await getAllProjectApi();
@@ -184,8 +203,7 @@ export default function Home({}: Props) {
   }, [isDeletedSuccess, deleteSuccessMessage]);
   useEffect(() => {
     if (error) {
-      // alert(error);
-      dispatch(resetError()); // Reset error về null
+      dispatch(resetError());
     }
   }, [error]);
   return (

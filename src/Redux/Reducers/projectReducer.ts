@@ -9,7 +9,7 @@ const initialState: ProjectState = {
   error: null,
   currentUser: null,
   notificationType: null,
-  deleteSuccessMessage: "", // Thêm trạng thái lưu thông báo thành công
+  deleteSuccessMessage: "",
 };
 
 export interface TypeProject {
@@ -69,18 +69,18 @@ const projectReducer = createSlice({
       getAllProjectApi.fulfilled,
       (state: ProjectState, action: PayloadAction<TypeProject[]>) => {
         state.arrProject = action.payload;
-        state.error = null; // Reset lỗi nếu có
+        state.error = null;
       }
     );
     builder.addCase(
       getAllProjectApi.rejected,
       (state: ProjectState, action) => {
-        state.error = action.error.message; // Ghi nhận lỗi vào state
+        state.error = action.error.message;
       }
     );
     builder.addCase(deleteProjectFromApi.fulfilled, (state, action) => {
       state.isDeletedSuccess = true;
-      state.deleteSuccessMessage = action.payload.message; // Lưu thông báo thành công
+      state.deleteSuccessMessage = action.payload.message;
       state.error = null;
       state.notificationType = "success";
     });
@@ -113,7 +113,7 @@ export const getAllProjectApi = createAsyncThunk(
       return res.data.content;
     } catch (error) {
       console.error("Error fetching projects: " + error.message);
-      throw new Error(error.message); // Ghi nhận lỗi để xử lý ở component
+      throw new Error(error.message);
     }
   }
 );
@@ -132,7 +132,6 @@ export const deleteProjectFromApi = createAsyncThunk<
     return response.data;
   } catch (error) {
     if (error.response && error.response.status === 403) {
-      // Xử lý lỗi khi dự án không thuộc quyền sở hữu của người dùng
       return thunkAPI.rejectWithValue(error.response.data.content);
     } else {
       return thunkAPI.rejectWithValue(
