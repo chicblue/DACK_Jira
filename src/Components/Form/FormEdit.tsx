@@ -8,12 +8,15 @@ import {
   categoryAsynAction,
 } from "../../Redux/Reducers/categoryReducer";
 import { drawerCallBackSubmit } from "../../Redux/Reducers/drawerReducers";
+import { actionEditProject } from "../../Redux/Reducers/projectChangeReducers";
 import {
   ProjectUpdate,
-  actionEditProject,
+  TypeProject,
+  resetError,
+  resetIsUpdateSuccess,
   updateAsynAction,
-} from "../../Redux/Reducers/projectChangeReducers";
-import { TypeProject } from "../../Redux/Reducers/projectReducer";
+} from "../../Redux/Reducers/projectReducer";
+import { notification } from "antd";
 
 type Props = {};
 
@@ -28,6 +31,9 @@ export default function FormEdit({}: Props) {
   );
   const { projectDetail } = useSelector(
     (state: RootState) => state.drawerReducers
+  );
+  const { isUpdateSuccess, updateSuccessMessage, error } = useSelector(
+    (state: RootState) => state.projectReducer
   );
   const initialProjectEdit: TypeProject = projectEdit || {
     members: [],
@@ -57,7 +63,7 @@ export default function FormEdit({}: Props) {
     },
     onSubmit: async (values: TypeProject) => {
       try {
-        const updatedValues: ProjectUpdate = {
+        const updatedValues: any = {
           id: values.id,
           projectName: values.projectName,
           creator: 0,
@@ -66,7 +72,7 @@ export default function FormEdit({}: Props) {
         };
 
         const actionUpdateApi = updateAsynAction(updatedValues);
-        const updatedProject = await dispatch(actionUpdateApi);
+        const updatedProject: any = await dispatch(actionUpdateApi);
 
         dispatch(actionEditProject(updatedProject.payload));
         console.log("proUp", updatedValues);
@@ -90,6 +96,26 @@ export default function FormEdit({}: Props) {
       );
     });
   };
+  useEffect(() => {
+    if (isUpdateSuccess && updateSuccessMessage) {
+      notification.success({
+        message: "Update success",
+        description: updateSuccessMessage,
+      });
+
+      dispatch(resetIsUpdateSuccess());
+    }
+  }, [isUpdateSuccess, updateSuccessMessage]);
+
+  useEffect(() => {
+    if (error) {
+      notification.error({
+        message: "Update failed",
+        description: error,
+      });
+      dispatch(resetError());
+    }
+  }, [error]);
   const getDataCategory = async () => {
     const actionApi = categoryAsynAction();
     dispatch(actionApi);

@@ -6,12 +6,20 @@ export type NotificationType = "success" | "info" | "warning" | "error";
 const initialState: ProjectState = {
   arrProject: [],
   isDeletedSuccess: false,
+  isUpdateSuccess: false,
   error: null,
   currentUser: null,
   notificationType: null,
   deleteSuccessMessage: "",
+  updateSuccessMessage: "",
 };
-
+export interface ProjectUpdate {
+  id: number;
+  projectName: string;
+  creator: number;
+  description: string;
+  categoryId: string;
+}
 export interface TypeProject {
   members: Member[];
   creator: Creator;
@@ -26,10 +34,12 @@ export interface TypeProject {
 export interface ProjectState {
   arrProject: TypeProject[];
   isDeletedSuccess: boolean;
+  isUpdateSuccess: boolean;
   error: string | null;
   currentUser: null;
   notificationType: NotificationType | null;
   deleteSuccessMessage: string | null;
+  updateSuccessMessage: string | null;
 }
 export interface Creator {
   id: number;
@@ -41,18 +51,22 @@ export interface Member {
   name: string;
   avatar: string;
 }
-interface DeleteProjectResponse {
+interface ProjectResponse {
   statusCode: number;
   message: string;
   content: string;
   dateTime: string;
 }
+
 const projectReducer = createSlice({
   name: "projectReducer",
   initialState,
   reducers: {
     resetIsDeletedSuccess: (state) => {
       state.isDeletedSuccess = false;
+    },
+    resetIsUpdateSuccess: (state) => {
+      state.isUpdateSuccess = false;
     },
     resetError: (state) => {
       state.error = null;
@@ -94,6 +108,22 @@ const projectReducer = createSlice({
         description: action.payload ?? action.error.message,
       });
     });
+    builder.addCase(updateAsynAction.fulfilled, (state, action) => {
+      state.isUpdateSuccess = true;
+      state.updateSuccessMessage = action.payload.message;
+      state.error = null;
+      state.notificationType = "success";
+    });
+
+    builder.addCase(updateAsynAction.rejected, (state, action) => {
+      state.error = action.payload ?? action.error.message;
+      state.isDeletedSuccess = false;
+      state.notificationType = "error";
+      // notification.error({
+      //   message: "Delete failed",
+      //   description: action.payload ?? action.error.message,
+      // });
+    });
   },
 });
 export const {
@@ -101,6 +131,7 @@ export const {
   resetError,
   setNotificationType,
   setDeleteSuccessMessage,
+  resetIsUpdateSuccess,
 } = projectReducer.actions;
 
 export default projectReducer.reducer;
@@ -119,15 +150,13 @@ export const getAllProjectApi = createAsyncThunk(
 );
 
 export const deleteProjectFromApi = createAsyncThunk<
-  DeleteProjectResponse,
+  ProjectResponse,
   number,
   { rejectValue: string }
 >("project/deleteProject", async (projectId, thunkAPI) => {
-  const apiUrl = `https://jiranew.cybersoft.edu.vn/api/Project/deleteProject?projectId=${projectId}`;
-
   try {
-    const response: AxiosResponse<DeleteProjectResponse> = await http.delete(
-      apiUrl
+    const response = await http.delete(
+      `/api/Project/deleteProject?projectId=${projectId}`
     );
     return response.data;
   } catch (error) {
@@ -136,6 +165,29 @@ export const deleteProjectFromApi = createAsyncThunk<
     } else {
       return thunkAPI.rejectWithValue(
         "Error deleting project: " + error.message
+      );
+    }
+  }
+});
+export const updateAsynAction = createAsyncThunk<
+  ProjectResponse,
+  number,
+  { rejectValue: string }
+>("updateAsynAction", async (values: any, thunkAPI) => {
+  try {
+    const res = await http.put(
+      `/api/Project/updateProject?projectId=${values.id}`,
+      values
+    );
+    alert(res.data.message);
+    window.location.reload();
+    return res.data;
+  } catch (error) {
+    if (error.response && error.response.status === 403) {
+      return thunkAPI.rejectWithValue(error.response.data.content);
+    } else {
+      return thunkAPI.rejectWithValue(
+        "Error updating project: " + error.message
       );
     }
   }
