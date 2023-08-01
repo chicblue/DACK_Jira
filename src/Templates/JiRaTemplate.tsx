@@ -7,17 +7,17 @@ import MainInfo from "../Components/IndexJira/MainJira/MainInfo";
 import Menu from "../Components/IndexJira/Menu";
 import ModalJR from "../Components/IndexJira/Modal/ModalJR";
 import Sidebar from "../Components/IndexJira/Sidebar";
+import { USERLOGIN, getStore } from "../Util/Config";
+import { history } from "..";
 type Props = {};
-
-
 
 export default function JiRaTemplate({}: Props) {
   return (
-   <>
-    <div className="jira">
-        <Sidebar/>
-        <Menu/>
-        
+    <>
+      <div className="jira">
+        <Sidebar />
+        <Menu />
+
         <Outlet></Outlet>
         <ModalJR />
       </div>

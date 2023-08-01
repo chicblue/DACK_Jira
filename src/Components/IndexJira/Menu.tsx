@@ -9,7 +9,7 @@ export default function Menu({}: Props) {
   const profile = JSON.parse(getStore(USERLOGIN));
   console.log("profile", profile);
   if (!profile) {
-    alert("Bạn phải đăng nhập để vào trang này");
+    alert("Vui lòng đăng nhập để vào trang này");
     history.push("/login");
   }
   return (
@@ -21,6 +21,17 @@ export default function Menu({}: Props) {
         <div className="account-info">
           <p>{profile.name}</p>
           <p>Report bugs</p>
+          <div>
+            <a
+              className="btn btn-outline-secondary"
+              onClick={() => {
+                clearStore(USERLOGIN);
+                window.location.reload(); //F5
+              }}
+            >
+              <i className="fa fa-sign-in"></i> Logout
+            </a>
+          </div>
         </div>
       </div>
       <div className="control">
@@ -87,17 +98,6 @@ export default function Menu({}: Props) {
         <div>
           <i className="fa fa-box" />
           <span>Components</span>
-        </div>
-        <div>
-          <a
-            className="btn btn-outline-secondary"
-            onClick={() => {
-              clearStore(USERLOGIN);
-              window.location.reload(); //F5
-            }}
-          >
-            <i className="fa fa-sign-in"></i> Logout
-          </a>
         </div>
       </div>
     </div>
