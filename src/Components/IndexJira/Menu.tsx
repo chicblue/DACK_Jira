@@ -1,10 +1,17 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { clearStore, USERLOGIN } from "../../Util/Config";
+import { clearStore, getStore, USERLOGIN } from "../../Util/Config";
+import { history } from "../..";
 
 type Props = {};
 
 export default function Menu({}: Props) {
+  const profile = JSON.parse(getStore(USERLOGIN));
+  console.log("profile", profile);
+  if (!profile) {
+    alert("Bạn phải đăng nhập để vào trang này");
+    history.push("/login");
+  }
   return (
     <div className="menu">
       <div className="account">
@@ -12,7 +19,7 @@ export default function Menu({}: Props) {
           <img src={require("../../assets/img/img/download.jfif")} />
         </div>
         <div className="account-info">
-          <p>CyberLearn.vn</p>
+          <p>{profile.name}</p>
           <p>Report bugs</p>
         </div>
       </div>
@@ -82,15 +89,15 @@ export default function Menu({}: Props) {
           <span>Components</span>
         </div>
         <div>
-        <a
-              className="btn btn-outline-secondary"
-              onClick={() => {
-                clearStore(USERLOGIN);
-                window.location.reload(); //F5
-              }}
-            >
-              <i className="fa fa-sign-in"></i> Logout
-            </a>
+          <a
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              clearStore(USERLOGIN);
+              window.location.reload(); //F5
+            }}
+          >
+            <i className="fa fa-sign-in"></i> Logout
+          </a>
         </div>
       </div>
     </div>
