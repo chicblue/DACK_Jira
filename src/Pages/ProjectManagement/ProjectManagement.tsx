@@ -27,10 +27,10 @@ import {
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
 
-interface DataType extends Omit<TypeProject, "members" | "creator"> {
+interface DataType extends Omit<TypeProject, | "creator"> {
   key: string;
   creator: string;
-  member: JSX.Element[];
+ 
 }
 
 type Props = {};
@@ -102,7 +102,12 @@ export default function Home({}: Props) {
       title: "Member",
       dataIndex: "member",
       key: "member",
-      ellipsis: true, 
+      ellipsis: true,
+      render:(_,record)=>{
+        return record.members?.map((member)=>{
+            return member.name
+        })
+      }
     },
     {
       title: "Action",
@@ -183,7 +188,8 @@ export default function Home({}: Props) {
             height={30}
             className="rounded-circle"
           />
-        )),
+        )) 
+      ,
        
         description: project.description,
       }));
