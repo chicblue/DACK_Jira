@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
 
-import { Button, Space, Table, notification } from "antd";
+import { Button, Space, Table, notification ,Popover,Avatar} from "antd";
 import type { TableProps } from "antd";
 
 import type {
@@ -102,7 +102,7 @@ export default function Home({}: Props) {
       title: "Member",
       dataIndex: "member",
       key: "member",
-      ellipsis: true,
+      ellipsis: true, 
     },
     {
       title: "Action",
@@ -136,6 +136,7 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
+    console.log(arrProject)
   const handleEditClick = async (projectId: number) => {
     try {
       const response = await http.get(
@@ -183,6 +184,7 @@ export default function Home({}: Props) {
             className="rounded-circle"
           />
         )),
+       
         description: project.description,
       }));
       setTableData(convertedData);
