@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
 
-import { Button, Space, Table, notification ,Popover,Avatar} from "antd";
-import type { TableProps } from "antd";
+import { Button, Space, Table, notification, Popover, Avatar } from "antd";
+import { TableProps, Alert } from "antd";
 
 import type {
   ColumnsType,
@@ -27,10 +27,9 @@ import {
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
 
-interface DataType extends Omit<TypeProject, | "creator"> {
+interface DataType extends Omit<TypeProject, "creator"> {
   key: string;
   creator: string;
- 
 }
 
 type Props = {};
@@ -88,26 +87,45 @@ export default function Home({}: Props) {
     {
       title: "Category",
       dataIndex: "categoryName",
-      key: "category",
+      key: "categoryName",
       ellipsis: true,
+      filters: [
+        {
+          text: "Dự án web",
+          value: "Dự án web",
+        },
+        {
+          text: "Dự án di động",
+          value: "Dự án di động",
+        },
+        {
+          text: "Dự án phần mềm",
+          value: "Dự án phần mềm",
+        },
+      ],
+      filterMode: "menu",
+      filterSearch: true,
+      filteredValue: filteredInfo.categoryName || null,
+      onFilter: (value: any, record) => record.categoryName.startsWith(value),
     },
     {
       title: "Creator",
       dataIndex: "creator",
       key: "creator",
       ellipsis: true,
-      render: (text) => <div className=" btn btn-outline-success">{text}</div>,
+
+      render: (text) => <Alert message={text} type="success" />,
     },
     {
       title: "Member",
       dataIndex: "member",
       key: "member",
       ellipsis: true,
-      render:(_,record)=>{
-        return record.members?.map((member)=>{
-            return member.name
-        })
-      }
+      render: (_, record) => {
+        return record.members?.map((member) => {
+          return member.name;
+        });
+      },
     },
     {
       title: "Action",
@@ -141,7 +159,7 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-    console.log(arrProject)
+  console.log(arrProject);
   const handleEditClick = async (projectId: number) => {
     try {
       const response = await http.get(
@@ -188,9 +206,7 @@ export default function Home({}: Props) {
             height={30}
             className="rounded-circle"
           />
-        )) 
-      ,
-       
+        )),
         description: project.description,
       }));
       setTableData(convertedData);
