@@ -113,19 +113,32 @@ export default function Home({}: Props) {
       dataIndex: "creator",
       key: "creator",
       ellipsis: true,
-
       render: (text) => <Alert message={text} type="success" />,
     },
     {
       title: "Member",
-      dataIndex: "member",
-      key: "member",
+      dataIndex: "members",
+      key: "members",
       ellipsis: true,
-      render: (_, record) => {
-        return record.members?.map((member) => {
-          return member.name;
-        });
-      },
+      // render: (_, record) => (
+      //   <div>
+      //     {record.members ? (
+      //       record.members.map((member, index) => (
+      //         <div key={index}>
+      //           <img
+      //             src={member.avatar}
+      //             alt="123"
+      //             width={30}
+      //             height={30}
+      //             className="rounded-circle"
+      //           />
+      //         </div>
+      //       ))
+      //     ) : (
+      //       <div>No members available</div>
+      //     )}
+      //   </div>
+      // ),
     },
     {
       title: "Action",
@@ -191,15 +204,15 @@ export default function Home({}: Props) {
 
   useEffect(() => {
     if (arrProject.length > 0) {
-      const convertedData: any = arrProject.map((project) => ({
-        key: project.id.toString(),
+      const convertedData: any = arrProject.map((project, index) => ({
+        key: index,
         id: project.id,
         projectName: project.projectName,
         categoryName: project.categoryName,
         creator: project.creator.name,
-        member: project.members.map((member) => (
+        members: project.members.map((member, index) => (
           <img
-            key={member.userId.toString()}
+            key={index}
             src={member.avatar}
             alt=""
             width={30}
@@ -209,9 +222,16 @@ export default function Home({}: Props) {
         )),
         description: project.description,
       }));
+      convertedData.forEach((data: any) => {
+        data.members.push(
+          <button className="btn rounded-circle border">+</button>
+        );
+      });
       setTableData(convertedData);
     }
+    console.log(arrProject);
   }, [arrProject]);
+
   const handleDeleteProject = (projectId: number) => {
     dispatch(deleteProjectFromApi(projectId));
   };
