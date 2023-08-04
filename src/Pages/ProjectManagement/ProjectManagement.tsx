@@ -210,7 +210,7 @@ export default function Home({}: Props) {
         projectName: project.projectName,
         categoryName: project.categoryName,
         creator: project.creator.name,
-        members: project.members.map((member, index) => (
+        members: project.members.slice(0,3).map((member, index) => (
           <img
             key={index}
             src={member.avatar}
