@@ -9,6 +9,7 @@ import {
   USERLOGIN,
 } from "../../Util/Config";
 import { history } from "../..";
+import { User } from "./createTaskReducer";
 export interface UserLoginApi {
   email: "";
   password: "";
@@ -16,16 +17,20 @@ export interface UserLoginApi {
 
 export interface UsersState {
   userLogin: UserLoginApi | undefined;
+ 
 }
+
 
 const initialState = {
   userLogin: getStoreJson(USERLOGIN),
+ 
 };
 
 const userReducer = createSlice({
   name: "userReducer",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: (builder) => {
     builder.addCase(
       loginAsynAction.fulfilled,

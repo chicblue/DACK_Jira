@@ -9,14 +9,17 @@ import { TypeProject } from "../../Redux/Reducers/projectReducer";
 import {
   createTaskAsynAction,
   getPriorityApi,
+  getStatusIdApi,
   getTaskTypeApi,
   getUserApi,
   Priority,
+  Status,
   TaskType,
 } from "../../Redux/Reducers/createTaskReducer";
 import { useFormik } from "formik";
 import { http } from "../../Util/Config";
 import { string } from "yup";
+import { drawerCallBackSubmit } from "../../Redux/Reducers/drawerReducers";
 
 type Props = {};
 
@@ -45,7 +48,7 @@ export default function FormCreateTask({}: Props) {
   const { arrProject } = useSelector(
     (state: RootState) => state.projectReducer
   );
-  const { arrTaskType, arrPriority, arrUser } = useSelector(
+  const { arrTaskType, arrPriority, arrUser,arrStatus } = useSelector(
     (state: RootState) => state.createTaskReducer
   );
   const userOptions = arrUser.map((item, index) => {
@@ -71,11 +74,18 @@ export default function FormCreateTask({}: Props) {
     const action: any = await getUserApi();
     dispatch(action);
   };
+  const getDataStatus = async () => {
+    const action: any = await getStatusIdApi();
+    dispatch(action);
+  };
 
   useEffect(() => {
     getDataTaskType();
     getDataPriority();
     getDataUser();
+    getDataStatus();
+    const action = drawerCallBackSubmit(createTaskFrm.handleSubmit);
+    dispatch(action);
   }, []);
 
   const createTaskFrm = useFormik<TypeCreateTask>({
@@ -83,13 +93,13 @@ export default function FormCreateTask({}: Props) {
       listUserAsign: [],
       taskName: "",
       description: "",
-      statusId: "1",
+      statusId: '',
       originalEstimate: 0,
       timeTrackingSpent: 0,
       timeTrackingRemaining: 0,
       projectId: 0,
       typeId: 0,
-      priotityId: 0,
+      priotityId:0,
     },
     onSubmit: async (values: TypeCreateTask) => {
       console.log("giatri", values);
@@ -125,11 +135,25 @@ export default function FormCreateTask({}: Props) {
         />
       </div>
       <div className="form-group">
+        <p>Status</p>
+        <select name="statusId"
+          className="form-control"
+          onChange={createTaskFrm.handleChange}>
+            {arrStatus.map((item: Status, index) => {
+                return (
+                  <option key={index} value={item.statusId}>
+                    {item.statusName}
+                  </option>
+                );
+              })}
+          </select>
+      </div>
+      <div className="form-group">
         <div className="row">
           <div className="col-6">
             <p>Priotity</p>
             <select
-              name="priotityId"
+              name="priorityId"
               className="form-control"
               onChange={createTaskFrm.handleChange}
             >
@@ -268,7 +292,7 @@ export default function FormCreateTask({}: Props) {
           onChange={handleEditorChange}
         />
       </div>
-      <button type="submit">submit</button>
+     
     </form>
   );
 }

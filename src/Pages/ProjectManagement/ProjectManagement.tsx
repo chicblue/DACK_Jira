@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
 
-import { Button, Space, Table, notification, Popover, Avatar } from "antd";
+import { Button, Space, Table, notification, Popover, Avatar, AutoComplete, Select } from "antd";
 import { TableProps, Alert } from "antd";
 
 import type {
@@ -26,6 +26,7 @@ import {
 } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
+import { getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
 
 interface DataType extends Omit<TypeProject, "creator"> {
   key: string;
@@ -34,7 +35,7 @@ interface DataType extends Omit<TypeProject, "creator"> {
 
 type Props = {};
 
-export default function Home({}: Props) {
+export default function Home({ }: Props) {
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -172,7 +173,7 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-  console.log(arrProject);
+  
   const handleEditClick = async (projectId: number) => {
     try {
       const response = await http.get(
@@ -190,7 +191,7 @@ export default function Home({}: Props) {
         dispatch(actionDrawer);
         dispatch(actionProjectDetail);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const handleGetProject = async () => {
@@ -201,7 +202,20 @@ export default function Home({}: Props) {
   useEffect(() => {
     handleGetProject();
   }, [isDeletedSuccess]);
+  const { userSearch ,arrUser} = useSelector(
+    (state: RootState) => state.createTaskReducer
+  );
+  
+  
+  // const getDataUserSearch = async (value:string) => {
+  //   const actionUserSearch = getUserSearchApi(value);
+  //   dispatch(actionUserSearch);
+  // }
+  const userOptions = arrUser.map((item, index) => {
+    return { value: item.userId, label: item.name };
+  });
 
+ 
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
@@ -210,7 +224,7 @@ export default function Home({}: Props) {
         projectName: project.projectName,
         categoryName: project.categoryName,
         creator: project.creator.name,
-        members: project.members.slice(0,3).map((member, index) => (
+        members: project.members.slice(0, 3).map((member, index) => (
           <img
             key={index}
             src={member.avatar}
@@ -224,7 +238,26 @@ export default function Home({}: Props) {
       }));
       convertedData.forEach((data: any) => {
         data.members.push(
-          <button className="btn rounded-circle border">+</button>
+          <Popover placement="rightTop" title={'Add User'} content={() => {
+            return  <Select
+            id="listUserAsign"
+            mode="multiple"
+            placeholder="Please select"
+            defaultValue={[]}
+            
+            onSelect={(value) => {
+            
+              
+            }}
+            style={{ width: "100%" }}
+            options={userOptions}
+            optionFilterProp="label"
+          />
+          
+          }} trigger="click">
+            <button className="btn rounded-circle border">+</button>
+          </Popover>
+
         );
       });
       setTableData(convertedData);
