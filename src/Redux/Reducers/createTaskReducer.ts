@@ -74,18 +74,20 @@ const createTaskReducer = createSlice({
       action: PayloadAction<User[]>
     ) => {
       state.userSearch = action.payload;
+     
     },
     getStatus:(
       state:CreateTaskState,
       action:PayloadAction<Status[]>
     )=>{
       state.arrStatus=action.payload
+     
     }
   },
 
 });
 
-export const { getTaskType, getPriority, getUser, getUserSearch,getStatus } = createTaskReducer.actions
+export const { getTaskType, getPriority,getUser,  getUserSearch,getStatus, } = createTaskReducer.actions
 
 export default createTaskReducer.reducer
 
@@ -114,7 +116,7 @@ export const getPriorityApi = () => {
 export const getUserApi = () => {
   return async (dispatch: DispatchType) => {
    
-    const res = await http.get("/api/Users/getUser");
+    const res = await http.get("api/Users/getUser");
     const action = getUser(res.data.content);
     dispatch(action);
   };

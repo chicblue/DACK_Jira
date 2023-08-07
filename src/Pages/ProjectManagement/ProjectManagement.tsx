@@ -28,6 +28,9 @@ import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
 import { getUserSearchApi ,getUserApi} from "../../Redux/Reducers/createTaskReducer";
 
+import { number } from "yup";
+// import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
+
 interface DataType extends Omit<TypeProject, "creator"> {
   key: string;
   creator: string;
@@ -190,6 +193,11 @@ export default function Home({ }: Props) {
     const actionUserSearch = getUserSearchApi(value);
     dispatch(actionUserSearch);
   }
+
+
+  useEffect(()=>{
+    getDataUser();
+  },[])
   const userOptions = arrUser.map((item, index) => {
     return {  value: item.userId, label: item.name };
   });
@@ -200,6 +208,7 @@ export default function Home({ }: Props) {
   useEffect(()=>{
     getDataUser();
   })
+ console.log(userSearch);
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
@@ -223,9 +232,33 @@ export default function Home({ }: Props) {
       convertedData.forEach((data: any) => {
         data.members.push(
           <Popover placement="rightTop" title={'Add User'} content={() => {
-            return <button onClick={()=>{
-              console.log(data.id)
-            }}>123</button>
+
+            return  <Select
+              style={{width:'100%'}}
+              defaultValue={[]}
+              mode="multiple"
+             
+              options={ userOptions}
+              onSelect={async(value,option)=>{
+                const addMember ={
+                  projectId: data.id,
+                  userId:value
+                }
+                console.log(addMember);
+                try {
+                  const res = await http.post(
+                    "/api/Project/assignUserProject",addMember
+                  );
+                    console.log(res)
+                  alert("Thêm Mới Thành Công ");
+                  window.location.reload();
+                } catch (err) {
+                  alert("Thất Bại !!!!");
+                  console.log(err)
+                }
+              }}
+              optionFilterProp="label"
+            />
           
           }} trigger="click">
             <button className="btn rounded-circle border">+</button>
