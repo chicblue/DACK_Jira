@@ -118,12 +118,14 @@ export default function FormCreateTask({}: Props) {
           name="projectId"
           className="form-control"
           onChange={createTaskFrm.handleChange}
+         
         >
           {arrProject.map((project: TypeProject, index) => {
             const projectId = project.id as number;
             return (
               <option key={index} value={projectId}>
                 {project.projectName}
+
               </option>
             );
           })}

@@ -35,7 +35,7 @@ export interface CreateTaskState {
   arrUser: User[],
   userSearch: User[],
   arrStatus:Status[]
-
+  arrUserProject:User[]
 }
 
 const initialState: CreateTaskState = {
@@ -43,7 +43,8 @@ const initialState: CreateTaskState = {
   arrPriority: [],
   arrUser: [],
   userSearch: [],
-  arrStatus:[]
+  arrStatus:[],
+  arrUserProject:[]
 }
 
 
@@ -82,12 +83,19 @@ const createTaskReducer = createSlice({
     )=>{
       state.arrStatus=action.payload
      
-    }
+    },
+    getUserProject: (
+      state: CreateTaskState,
+      action: PayloadAction<User[]>
+    ) => {
+      state.arrUserProject = action.payload;
+     
+    },
   },
 
 });
 
-export const { getTaskType, getPriority,getUser,  getUserSearch,getStatus, } = createTaskReducer.actions
+export const { getTaskType, getPriority,getUser,  getUserSearch,getStatus ,getUserProject} = createTaskReducer.actions
 
 export default createTaskReducer.reducer
 
@@ -121,6 +129,15 @@ export const getUserApi = () => {
     dispatch(action);
   };
 };
+// ----------------
+export const getUserProjectApi = (keyword) => {
+  return async (dispatch: DispatchType) => {
+   
+    const res = await http.get(`api/Users/getUserByProjectId?idProject=${keyword}`);
+    const action = getUserProject(res.data.content);
+    dispatch(action);
+  };
+};
 // ----------
 
 export const getStatusIdApi = () => {
@@ -149,6 +166,7 @@ export const createTaskAsynAction = createAsyncThunk(
 
       alert('Tạo Task Thành Công');
       history.push("/projectmanagement");
+      window.location.reload();
       return res.data.content;
     } catch (err) {
       console.log(err)

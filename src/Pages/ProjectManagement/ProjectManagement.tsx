@@ -207,7 +207,7 @@ export default function Home({ }: Props) {
   };
   useEffect(()=>{
     getDataUser();
-  })
+  },[])
  console.log(userSearch);
   useEffect(() => {
     if (arrProject.length > 0) {
