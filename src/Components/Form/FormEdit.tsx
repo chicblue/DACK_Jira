@@ -3,14 +3,10 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
-import {
-  Category,
-  categoryAsynAction,
-} from "../../Redux/Reducers/categoryReducer";
+import { categoryAsynAction } from "../../Redux/Reducers/categoryReducer";
 import { drawerCallBackSubmit } from "../../Redux/Reducers/drawerReducers";
 import { actionEditProject } from "../../Redux/Reducers/projectChangeReducers";
 import {
-  ProjectUpdate,
   TypeProject,
   resetError,
   resetIsUpdateSuccess,
@@ -32,9 +28,9 @@ export default function FormEdit({}: Props) {
   const { projectDetail } = useSelector(
     (state: RootState) => state.drawerReducers
   );
-  const { isUpdateSuccess, updateSuccessMessage, error } = useSelector(
-    (state: RootState) => state.projectReducer
-  );
+  console.log("detail", projectDetail);
+  const { isUpdateSuccess, updateSuccessMessage, error, projectUpdate } =
+    useSelector((state: RootState) => state.projectReducer);
   const initialProjectEdit: TypeProject = projectEdit || {
     members: [],
     creator: { id: 0, name: "" },
@@ -48,7 +44,14 @@ export default function FormEdit({}: Props) {
   };
   useEffect(() => {
     if (projectDetail) {
-      editProjectFrm.setValues(projectDetail);
+      editProjectFrm.setValues((prevValues) => ({
+        ...prevValues,
+        id: projectDetail.id,
+        projectName: projectDetail.projectName,
+        description: projectDetail.description,
+        categoryId: projectDetail.projectCategory.id,
+        // ... other fields
+      }));
     }
   }, [projectDetail]);
   useEffect(() => {
@@ -57,25 +60,31 @@ export default function FormEdit({}: Props) {
     getDataCategory();
   }, []);
 
-  const editProjectFrm = useFormik<TypeProject>({
+  const editProjectFrm = useFormik<any>({
     initialValues: {
-      ...initialProjectEdit,
+      id: 1,
+      projectName: "",
+      description: "",
+      projectCategory: {
+        id: 0,
+        name: "",
+      },
     },
     onSubmit: async (values: TypeProject) => {
       try {
-        const updatedValues: any = {
+        const projectUpdate: any = {
           id: values.id,
           projectName: values.projectName,
           creator: 0,
           description: values.description,
-          categoryId: String(values.categoryId),
+          categoryId: values.categoryId,
         };
 
-        const actionUpdateApi = updateAsynAction(updatedValues);
+        const actionUpdateApi = updateAsynAction(projectUpdate);
         const updatedProject: any = await dispatch(actionUpdateApi);
 
         dispatch(actionEditProject(updatedProject.payload));
-        console.log("proUp", updatedValues);
+        console.log("proUp", projectUpdate);
         setSubmittedSuccessfully(true);
       } catch (err) {
         console.log(err);
@@ -85,17 +94,10 @@ export default function FormEdit({}: Props) {
           alert("Failed to update project. Please try again later.");
         }
       }
+      console.log("cateID", projectUpdate.categoryId);
     },
   });
-  const renderCategory = (): JSX.Element[] => {
-    return arrCategory.map((item: Category, index) => {
-      return (
-        <option value={item.id} key={index}>
-          {item.projectCategoryName}
-        </option>
-      );
-    });
-  };
+
   useEffect(() => {
     if (isUpdateSuccess && updateSuccessMessage) {
       notification.success({
@@ -116,6 +118,7 @@ export default function FormEdit({}: Props) {
       dispatch(resetError());
     }
   }, [error]);
+
   const getDataCategory = async () => {
     const actionApi = categoryAsynAction();
     dispatch(actionApi);
@@ -123,7 +126,9 @@ export default function FormEdit({}: Props) {
   const handleEditorChange = (e: any) => {
     editProjectFrm.setFieldValue("description", e.target.getContent());
   };
-
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCategoryId = parseInt(event.target.value, 10);
+  };
   return (
     <form className="container-fuild" onSubmit={editProjectFrm.handleSubmit}>
       <div className="row">
@@ -156,9 +161,11 @@ export default function FormEdit({}: Props) {
               value={editProjectFrm.values.categoryId}
               className="form-control"
               name="categoryId"
-              onChange={editProjectFrm.handleChange}
+              onChange={handleSelectChange}
             >
-              {renderCategory()}
+              <option value={1}>Dự án web</option>
+              <option value={2}>Dự án phần mềm</option>
+              <option value={3}>Dự án di động</option>
             </select>
           </div>
         </div>
@@ -166,8 +173,8 @@ export default function FormEdit({}: Props) {
           <div className="form-group">
             <p className="font-weight-bold">Description</p>
             <Editor
+              value={editProjectFrm.values.description}
               id="description1"
-              initialValue={editProjectFrm.values.description}
               init={{
                 plugins: "link image code",
                 toolbar:

@@ -8,6 +8,7 @@ const initialState: ProjectState = {
   isDeletedSuccess: false,
   isUpdateSuccess: false,
   error: null,
+  projectUpdate: null,
   currentUser: null,
   notificationType: null,
   deleteSuccessMessage: "",
@@ -40,6 +41,7 @@ export interface ProjectState {
   notificationType: NotificationType | null;
   deleteSuccessMessage: string | null;
   updateSuccessMessage: string | null;
+  projectUpdate: ProjectUpdate | null;
 }
 export interface Creator {
   id: number;

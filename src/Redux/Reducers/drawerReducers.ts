@@ -25,8 +25,11 @@ export interface ProjectDetail {
   id: number;
   projectName: string;
   description: string;
-  categoryId: number;
-  categoryName: string;
+  projectCategory: {
+    id: number;
+    name: string;
+  };
+
   alias: string;
   deleted: boolean;
 }
