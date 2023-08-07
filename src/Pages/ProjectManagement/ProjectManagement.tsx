@@ -202,7 +202,14 @@ export default function Home({}: Props) {
       }));
       convertedData.forEach((data: any) => {
         data.members.push(
-          <button className="btn rounded-circle border">+</button>
+          <button
+            className="btn rounded-circle border"
+            onClick={() => {
+              console.log("idProject", data.id);
+            }}
+          >
+            +
+          </button>
         );
       });
       setTableData(convertedData);
