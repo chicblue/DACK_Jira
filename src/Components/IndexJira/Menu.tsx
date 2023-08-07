@@ -7,7 +7,6 @@ type Props = {};
 
 export default function Menu({}: Props) {
   const profile = JSON.parse(getStore(USERLOGIN));
-  console.log("profile", profile);
   if (!profile) {
     alert("Vui lòng đăng nhập để vào trang này");
     history.push("/login");

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
 
@@ -46,7 +46,6 @@ export default function Home({}: Props) {
     filters,
     sorter
   ) => {
-    console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter as SorterResult<DataType>);
   };
@@ -120,25 +119,6 @@ export default function Home({}: Props) {
       dataIndex: "members",
       key: "members",
       ellipsis: true,
-      // render: (_, record) => (
-      //   <div>
-      //     {record.members ? (
-      //       record.members.map((member, index) => (
-      //         <div key={index}>
-      //           <img
-      //             src={member.avatar}
-      //             alt="123"
-      //             width={30}
-      //             height={30}
-      //             className="rounded-circle"
-      //           />
-      //         </div>
-      //       ))
-      //     ) : (
-      //       <div>No members available</div>
-      //     )}
-      //   </div>
-      // ),
     },
     {
       title: "Action",
@@ -150,7 +130,6 @@ export default function Home({}: Props) {
             className="btn btn-primary mx-2"
             onClick={() => {
               handleEditClick(record.id);
-              console.log(record.id);
             }}
           >
             <i className="fa fa-edit"></i>
@@ -172,14 +151,13 @@ export default function Home({}: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-  console.log(arrProject);
+
   const handleEditClick = async (projectId: number) => {
     try {
       const response = await http.get(
         `/api/Project/getProjectDetail?id=${projectId}`
       );
       const projectDetail: ProjectDetail = response.data.content;
-      console.log(projectDetail);
       if (projectDetail) {
         const actionDrawer = drawerOpenClose(true);
         const actionContent = drawerComponentContent(<FormEdit />);
@@ -229,7 +207,6 @@ export default function Home({}: Props) {
       });
       setTableData(convertedData);
     }
-    console.log(arrProject);
   }, [arrProject]);
 
   const handleDeleteProject = (projectId: number) => {

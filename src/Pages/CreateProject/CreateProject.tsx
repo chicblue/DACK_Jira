@@ -6,7 +6,7 @@ import {
   Category,
   categoryAsynAction,
 } from "../../Redux/Reducers/categoryReducer";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import { http } from "../../Util/Config";
 import { history } from "../..";
 type Props = {};
@@ -52,7 +52,6 @@ export default function CreateProject({}: Props) {
       alias: "",
     },
     onSubmit: async (values: createProjectFrm) => {
-      console.log("giatri", values);
       try {
         const res = await http.post(
           "api/Project/createProjectAuthorize",

@@ -1,11 +1,5 @@
-import React from "react";
 import { Input, Button } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  TwitterOutlined,
-  FacebookOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import { DispatchType } from "../../Redux/configStore";
 import { useDispatch } from "react-redux";
@@ -32,7 +26,6 @@ export default function Login({}: Props) {
       password: Yup.string().required("password is required"),
     }),
     onSubmit: (values: UserLoginFrm) => {
-      console.log(values);
       const actionApi = loginAsynAction(values);
       dispatch(actionApi);
     },
@@ -109,12 +102,7 @@ export default function Login({}: Props) {
         </p>
 
         <div className="social mt-3 d-flex">
-          <Button
-            className="mx-2"
-            // style={{ backgroundColor: "rgb(59,89,152)" }}
-            shape="circle"
-            size={"large"}
-          >
+          <Button className="mx-2" shape="circle" size={"large"}>
             <i className="fab fa-facebook-f"></i>
           </Button>
           <Button
