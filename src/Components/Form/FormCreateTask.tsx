@@ -1,8 +1,7 @@
 import { Editor } from "@tinymce/tinymce-react";
 import React, { useState, useEffect } from "react";
 import { Radio, Select, Space, Slider } from "antd";
-import type { SizeType } from "antd/es/config-provider/SizeContext";
-import type { SelectProps, RadioChangeEvent } from "antd";
+
 import { DispatchType, RootState } from "../../Redux/configStore";
 import { useDispatch, useSelector } from "react-redux";
 import { TypeProject } from "../../Redux/Reducers/projectReducer";
@@ -72,7 +71,7 @@ export default function FormCreateTask({}: Props) {
     const action: any = await getPriorityApi();
     dispatch(action);
   };
-  const getDataUser = async () => {
+   const getDataUser = async () => {
     const action: any = await getUserApi();
     dispatch(action);
   };

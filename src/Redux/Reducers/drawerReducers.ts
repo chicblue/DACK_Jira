@@ -14,7 +14,7 @@ const initialState: DrawerState = {
   visible: false,
   componentCotent: "",
   callBackSubmit: (): void => {
-    alert("demo");
+   
   },
   title: "",
   projectDetail: null,

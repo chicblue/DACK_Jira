@@ -26,7 +26,7 @@ import {
 } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
-import { getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
+import { getUserSearchApi ,getUserApi} from "../../Redux/Reducers/createTaskReducer";
 
 interface DataType extends Omit<TypeProject, "creator"> {
   key: string;
@@ -186,15 +186,20 @@ export default function Home({ }: Props) {
   );
   
   
-  // const getDataUserSearch = async (value:string) => {
-  //   const actionUserSearch = getUserSearchApi(value);
-  //   dispatch(actionUserSearch);
-  // }
+  const getDataUserSearch = async (value:string) => {
+    const actionUserSearch = getUserSearchApi(value);
+    dispatch(actionUserSearch);
+  }
   const userOptions = arrUser.map((item, index) => {
-    return { value: item.userId, label: item.name };
+    return {  value: item.userId, label: item.name };
   });
-
- 
+  const getDataUser = async () => {
+    const action: any = await getUserApi();
+    dispatch(action);
+  };
+  useEffect(()=>{
+    getDataUser();
+  })
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
@@ -218,20 +223,9 @@ export default function Home({ }: Props) {
       convertedData.forEach((data: any) => {
         data.members.push(
           <Popover placement="rightTop" title={'Add User'} content={() => {
-            return  <Select
-            id="listUserAsign"
-            mode="multiple"
-            placeholder="Please select"
-            defaultValue={[]}
-            
-            onSelect={(value) => {
-            
-              
-            }}
-            style={{ width: "100%" }}
-            options={userOptions}
-            optionFilterProp="label"
-          />
+            return <button onClick={()=>{
+              console.log(data.id)
+            }}>123</button>
           
           }} trigger="click">
             <button className="btn rounded-circle border">+</button>
