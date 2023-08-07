@@ -8,6 +8,7 @@ const initialState: ProjectState = {
   isDeletedSuccess: false,
   isUpdateSuccess: false,
   error: null,
+  projectUpdate: null,
   currentUser: null,
   notificationType: null,
   deleteSuccessMessage: "",
@@ -40,6 +41,7 @@ export interface ProjectState {
   notificationType: NotificationType | null;
   deleteSuccessMessage: string | null;
   updateSuccessMessage: string | null;
+  projectUpdate: ProjectUpdate | null;
 }
 export interface Creator {
   id: number;
@@ -108,21 +110,11 @@ const projectReducer = createSlice({
         description: action.payload ?? action.error.message,
       });
     });
-    builder.addCase(updateAsynAction.fulfilled, (state, action) => {
-      state.isUpdateSuccess = true;
-      state.updateSuccessMessage = action.payload.message;
-      state.error = null;
-      state.notificationType = "success";
-    });
 
     builder.addCase(updateAsynAction.rejected, (state, action) => {
       state.error = action.payload ?? action.error.message;
       state.isDeletedSuccess = false;
       state.notificationType = "error";
-      // notification.error({
-      //   message: "Delete failed",
-      //   description: action.payload ?? action.error.message,
-      // });
     });
   },
 });

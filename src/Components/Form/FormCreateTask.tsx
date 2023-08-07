@@ -57,10 +57,12 @@ export default function FormCreateTask({}: Props) {
 
   const handleChange = (value: string | string[]) => {
     createTaskFrm.setFieldValue("listUserAsign", value);
+    console.log(value);
   };
 
   const handleEditorChange = (e: any) => {
     createTaskFrm.setFieldValue("description", e.target.getContent());
+    console.log(e.target.getContent());
   };
   const getDataTaskType = async () => {
     const action: any = await getTaskTypeApi();
@@ -93,7 +95,8 @@ export default function FormCreateTask({}: Props) {
       listUserAsign: [],
       taskName: "",
       description: "",
-      statusId: '',
+  
+      statusId: "",
       originalEstimate: 0,
       timeTrackingSpent: 0,
       timeTrackingRemaining: 0,
@@ -118,8 +121,9 @@ export default function FormCreateTask({}: Props) {
           onChange={createTaskFrm.handleChange}
         >
           {arrProject.map((project: TypeProject, index) => {
+            const projectId = project.id as number;
             return (
-              <option key={index} value={project.id}>
+              <option key={index} value={projectId}>
                 {project.projectName}
               </option>
             );

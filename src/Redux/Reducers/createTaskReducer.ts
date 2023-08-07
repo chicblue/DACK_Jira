@@ -1,12 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { history } from '../..';
-import { TypeCreateTask } from '../../Components/Form/FormCreateTask';
-import { http } from '../../Util/Config';
-import { DispatchType } from '../configStore';
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { history } from "../..";
+import { TypeCreateTask } from "../../Components/Form/FormCreateTask";
+import { http } from "../../Util/Config";
+import { DispatchType } from "../configStore";
 
 export interface TaskType {
   id: number,
   taskType: string
+
 }
 export interface Priority {
   priorityId: number;
@@ -45,8 +46,9 @@ const initialState: CreateTaskState = {
   arrStatus:[]
 }
 
+
 const createTaskReducer = createSlice({
-  name: 'createTaskReducer',
+  name: "createTaskReducer",
   initialState,
   reducers: {
     getTaskType: (
@@ -88,10 +90,12 @@ export const { getTaskType, getPriority, getUser, getUserSearch,getStatus } = cr
 export default createTaskReducer.reducer
 
 
+
 // -------------action Api---------------
 export const getTaskTypeApi = () => {
   return async (dispatch: DispatchType) => {
     const res = await http.get("api/TaskType/getAll");
+   
     const action = getTaskType(res.data.content);
     dispatch(action);
   };
@@ -100,7 +104,8 @@ export const getTaskTypeApi = () => {
 //   -----------
 export const getPriorityApi = () => {
   return async (dispatch: DispatchType) => {
-    const res = await http.get("api/Priority/getAll");
+
+    const res = await http.get("/api/Priority/getAll");
     const action = getPriority(res.data.content);
     dispatch(action);
   };
@@ -108,7 +113,8 @@ export const getPriorityApi = () => {
 //   ---------
 export const getUserApi = () => {
   return async (dispatch: DispatchType) => {
-    const res = await http.get("api/Users/getUser");
+   
+    const res = await http.get("/api/Users/getUser");
     const action = getUser(res.data.content);
     dispatch(action);
   };
@@ -148,3 +154,4 @@ export const createTaskAsynAction = createAsyncThunk(
     }
   }
 );
+
