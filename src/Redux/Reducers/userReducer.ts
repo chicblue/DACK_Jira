@@ -52,7 +52,7 @@ export const loginAsynAction = createAsyncThunk(
     try {
       const res = await http.post("/api/Users/signin", userLogin);
       setStoreJson(USERLOGIN, res.data.content);
-      alert(res.data.message);
+      alert('Đăng nhập Thành Công');
       history.push("/projectmanagement");
       return res.data.content;
     } catch (err) {
