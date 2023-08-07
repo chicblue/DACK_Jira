@@ -171,7 +171,6 @@ export const updateAsynAction = createAsyncThunk<
       `/api/Project/updateProject?projectId=${values.id}`,
       values
     );
-    alert(res.data.message);
     window.location.reload();
     return res.data;
   } catch (error) {
