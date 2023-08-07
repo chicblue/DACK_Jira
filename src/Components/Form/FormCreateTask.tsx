@@ -94,7 +94,6 @@ export default function FormCreateTask({}: Props) {
       listUserAsign: [],
       taskName: "",
       description: "",
-  
       statusId: "",
       originalEstimate: 0,
       timeTrackingSpent: 0,
