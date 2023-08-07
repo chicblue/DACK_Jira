@@ -13,9 +13,7 @@ export interface DrawerState {
 const initialState: DrawerState = {
   visible: false,
   componentCotent: "",
-  callBackSubmit: (): void => {
-   
-  },
+  callBackSubmit: (): void => {},
   title: "",
   projectDetail: null,
 };
