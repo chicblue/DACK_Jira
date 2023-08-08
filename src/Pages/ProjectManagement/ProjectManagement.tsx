@@ -45,6 +45,7 @@ import {
   displayLoading,
   hideLoading,
 } from "../../Redux/Reducers/loadingReducer";
+import { NavLink } from "react-router-dom";
 // import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
 
 interface DataType extends Omit<TypeProject, "creator"> {
@@ -234,7 +235,7 @@ export default function Home({}: Props) {
       const convertedData: any = arrProject.map((project, index) => ({
         key: index,
         id: project.id,
-        projectName: project.projectName,
+        projectName: project.projectName ,
         categoryName: project.categoryName,
         creator: project.creator.name,
        
