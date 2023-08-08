@@ -196,13 +196,10 @@ export default function Home({}: Props) {
 
   const handleGetProject = async () => {
     try {
-      dispatch(displayLoading()); // Hiển thị bảng loading trước khi gọi API
       const action = await getAllProjectApi();
       dispatch(action);
     } catch (error) {
       console.error("Error fetching projects:", error);
-    } finally {
-      dispatch(hideLoading()); // Ẩn bảng loading sau khi API hoàn tất (thành công hoặc thất bại)
     }
   };
 
