@@ -21,7 +21,8 @@ import IndexJira from "./Pages/Index/IndexJira";
 import CreateProject from "./Pages/CreateProject/CreateProject";
 import ProjectManagement from "./Pages/ProjectManagement/ProjectManagement";
 
-import ModalDrawer from './HOC/Modal/ModalDrawer';
+import ModalDrawer from "./HOC/Modal/ModalDrawer";
+import Loading from "./Components/Loading/Loading";
 
 export const history: any = createBrowserHistory();
 const root = ReactDOM.createRoot(
@@ -29,28 +30,25 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
-  
-    <ModalDrawer/>
-  <HistoryRouter history={history}>
-  <Routes>
-  <Route path='' element={<SignUpInTemplate/>}>
-        <Route path='' element={<Login/>}></Route>
-        <Route path='/login' element={<Login/>}></Route>
+    <Loading></Loading>
+    <ModalDrawer />
+    <HistoryRouter history={history}>
+      <Routes>
+        <Route path="" element={<SignUpInTemplate />}>
+          <Route path="" element={<Login />}></Route>
+          <Route path="/login" element={<Login />}></Route>
 
-        <Route path='/register' element={<Register/>}></Route>
-    </Route>
-    <Route path='' element ={<JiRaTemplate/>}>
-      <Route path='/indexjira' element={<IndexJira/>}></Route>
-      <Route path='/createproject' element={<CreateProject/>}></Route>
-      <Route path='/projectmanagement' element={<ProjectManagement/>}></Route>
-
-
-      
-
-    </Route>
- 
-  
-  </Routes>
-</HistoryRouter>
-</Provider>
+          <Route path="/register" element={<Register />}></Route>
+        </Route>
+        <Route path="" element={<JiRaTemplate />}>
+          <Route path="/indexjira" element={<IndexJira />}></Route>
+          <Route path="/createproject" element={<CreateProject />}></Route>
+          <Route
+            path="/projectmanagement"
+            element={<ProjectManagement />}
+          ></Route>
+        </Route>
+      </Routes>
+    </HistoryRouter>
+  </Provider>
 );

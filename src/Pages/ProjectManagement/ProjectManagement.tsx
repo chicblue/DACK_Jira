@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../Redux/configStore";
 
-import { Button, Space, Table, notification, Popover, Avatar, AutoComplete, Select } from "antd";
+import {
+  Button,
+  Space,
+  Table,
+  notification,
+  Popover,
+  Avatar,
+  AutoComplete,
+  Select,
+} from "antd";
 import { TableProps, Alert } from "antd";
 
 import type {
@@ -26,9 +35,16 @@ import {
 } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
-import { getUserSearchApi ,getUserApi} from "../../Redux/Reducers/createTaskReducer";
+import {
+  getUserSearchApi,
+  getUserApi,
+} from "../../Redux/Reducers/createTaskReducer";
 
 import { number } from "yup";
+import {
+  displayLoading,
+  hideLoading,
+} from "../../Redux/Reducers/loadingReducer";
 // import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
 
 interface DataType extends Omit<TypeProject, "creator"> {
@@ -38,7 +54,7 @@ interface DataType extends Omit<TypeProject, "creator"> {
 
 type Props = {};
 
-export default function Home({ }: Props) {
+export default function Home({}: Props) {
   const [filteredInfo, setFilteredInfo] = useState<
     Record<string, FilterValue | null>
   >({});
@@ -155,10 +171,11 @@ export default function Home({ }: Props) {
 
   const { arrProject, isDeletedSuccess, error, deleteSuccessMessage } =
     useSelector((state: RootState) => state.projectReducer);
-  
+  const { visible } = useSelector((state: RootState) => state.loadingReducer);
 
   const handleEditClick = async (projectId: number) => {
     try {
+      dispatch(displayLoading());
       const response = await http.get(
         `/api/Project/getProjectDetail?id=${projectId}`
       );
@@ -172,43 +189,49 @@ export default function Home({ }: Props) {
         dispatch(actionTitle);
         dispatch(actionDrawer);
         dispatch(actionProjectDetail);
+        dispatch(hideLoading());
       }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const handleGetProject = async () => {
-    const action: any = await getAllProjectApi();
-    dispatch(action);
+    try {
+      dispatch(displayLoading()); // Hiển thị bảng loading trước khi gọi API
+      const action = await getAllProjectApi();
+      dispatch(action);
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+    } finally {
+      dispatch(hideLoading()); // Ẩn bảng loading sau khi API hoàn tất (thành công hoặc thất bại)
+    }
   };
 
   useEffect(() => {
     handleGetProject();
   }, [isDeletedSuccess]);
-  const { userSearch ,arrUser} = useSelector(
+  const { userSearch, arrUser } = useSelector(
     (state: RootState) => state.createTaskReducer
   );
-  
-  
-  const getDataUserSearch = async (value:string) => {
+
+  const getDataUserSearch = async (value: string) => {
     const actionUserSearch = getUserSearchApi(value);
     dispatch(actionUserSearch);
-  }
+  };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     getDataUser();
-  },[])
+  }, []);
   const userOptions = arrUser.map((item, index) => {
-    return {  value: item.userId, label: item.name };
+    return { value: item.userId, label: item.name };
   });
   const getDataUser = async () => {
     const action: any = await getUserApi();
     dispatch(action);
   };
-  useEffect(()=>{
+  useEffect(() => {
     getDataUser();
-  },[])
- console.log(userSearch);
+  }, []);
+  console.log(userSearch);
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
@@ -217,54 +240,59 @@ export default function Home({ }: Props) {
         projectName: project.projectName,
         categoryName: project.categoryName,
         creator: project.creator.name,
-        members: project.members.slice(0, 3).map((member, index) => (
-          <img
-            key={index}
-            src={member.avatar}
-            alt=""
-            width={30}
-            height={30}
-            className="rounded-circle"
-          />
-        )),
+        members: project.members
+          .slice(0, 3)
+          .map((member, index) => (
+            <img
+              key={index}
+              src={member.avatar}
+              alt=""
+              width={30}
+              height={30}
+              className="rounded-circle"
+            />
+          )),
         description: project.description,
       }));
       convertedData.forEach((data: any) => {
         data.members.push(
-          <Popover placement="rightTop" title={'Add User'} content={() => {
-
-            return  <Select
-              style={{width:'100%'}}
-              defaultValue={[]}
-              mode="multiple"
-             
-              options={ userOptions}
-              onSelect={async(value,option)=>{
-                const addMember ={
-                  projectId: data.id,
-                  userId:value
-                }
-                console.log(addMember);
-                try {
-                  const res = await http.post(
-                    "/api/Project/assignUserProject",addMember
-                  );
-                    console.log(res)
-                  alert("Thêm Mới Thành Công ");
-                  window.location.reload();
-                } catch (err) {
-                  alert("Thất Bại !!!!");
-                  console.log(err)
-                }
-              }}
-              optionFilterProp="label"
-            />
-          
-          }} trigger="click">
+          <Popover
+            placement="rightTop"
+            title={"Add User"}
+            content={() => {
+              return (
+                <Select
+                  style={{ width: "100%" }}
+                  defaultValue={[]}
+                  mode="multiple"
+                  options={userOptions}
+                  onSelect={async (value, option) => {
+                    const addMember = {
+                      projectId: data.id,
+                      userId: value,
+                    };
+                    console.log(addMember);
+                    try {
+                      const res = await http.post(
+                        "/api/Project/assignUserProject",
+                        addMember
+                      );
+                      console.log(res);
+                      alert("Thêm Mới Thành Công ");
+                      window.location.reload();
+                    } catch (err) {
+                      alert("Thất Bại !!!!");
+                      console.log(err);
+                    }
+                  }}
+                  optionFilterProp="label"
+                />
+              );
+            }}
+            trigger="click"
+          >
             <button className="btn rounded-circle border">+</button>
           </Popover>
-
-         
         );
       });
       setTableData(convertedData);

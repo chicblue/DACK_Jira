@@ -1,7 +1,6 @@
 import { notification } from "antd";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { http } from "../../Util/Config";
-import { AxiosResponse } from "axios";
 export type NotificationType = "success" | "info" | "warning" | "error";
 const initialState: ProjectState = {
   arrProject: [],
@@ -13,6 +12,7 @@ const initialState: ProjectState = {
   notificationType: null,
   deleteSuccessMessage: "",
   updateSuccessMessage: "",
+  isLoading: false,
 };
 export interface ProjectUpdate {
   id: number;
@@ -42,6 +42,7 @@ export interface ProjectState {
   deleteSuccessMessage: string | null;
   updateSuccessMessage: string | null;
   projectUpdate: ProjectUpdate | null;
+  isLoading: boolean;
 }
 export interface Creator {
   id: number;
@@ -79,12 +80,23 @@ const projectReducer = createSlice({
     setDeleteSuccessMessage: (state, action: PayloadAction<string>) => {
       state.deleteSuccessMessage = action.payload;
     },
+    setIsLoading: (state: ProjectState, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
+    builder.addCase(
+      getAllProjectApi.pending,
+      (state: ProjectState, action: PayloadAction<TypeProject[]>) => {
+        state.isLoading = true;
+        state.error = null;
+      }
+    );
     builder.addCase(
       getAllProjectApi.fulfilled,
       (state: ProjectState, action: PayloadAction<TypeProject[]>) => {
         state.arrProject = action.payload;
+        state.isLoading = false;
         state.error = null;
       }
     );
@@ -92,12 +104,17 @@ const projectReducer = createSlice({
       getAllProjectApi.rejected,
       (state: ProjectState, action) => {
         state.error = action.error.message;
+        state.isLoading = false;
       }
     );
+    builder.addCase(deleteProjectFromApi.pending, (state, action) => {
+      state.isLoading = true;
+    });
     builder.addCase(deleteProjectFromApi.fulfilled, (state, action) => {
       state.isDeletedSuccess = true;
       state.deleteSuccessMessage = action.payload.message;
       state.error = null;
+      state.isLoading = false;
       state.notificationType = "success";
     });
 
@@ -105,15 +122,23 @@ const projectReducer = createSlice({
       state.error = action.payload ?? action.error.message;
       state.isDeletedSuccess = false;
       state.notificationType = "error";
+      state.isLoading = false;
+
       notification.error({
         message: "Delete failed",
         description: action.payload ?? action.error.message,
       });
     });
-
+    builder.addCase(updateAsynAction.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(updateAsynAction.fulfilled, (state, action) => {
+      state.isLoading = false;
+    });
     builder.addCase(updateAsynAction.rejected, (state, action) => {
       state.error = action.payload ?? action.error.message;
       state.isDeletedSuccess = false;
+      state.isLoading = false;
       state.notificationType = "error";
     });
   },
@@ -124,6 +149,7 @@ export const {
   setNotificationType,
   setDeleteSuccessMessage,
   resetIsUpdateSuccess,
+  setIsLoading,
 } = projectReducer.actions;
 
 export default projectReducer.reducer;
