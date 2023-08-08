@@ -212,16 +212,51 @@ export default function Home({ }: Props) {
         projectName: project.projectName,
         categoryName: project.categoryName,
         creator: project.creator.name,
-        members: project.members.slice(0, 3).map((member, index) => (
-          <img
-            key={index}
-            src={member.avatar}
-            alt=""
-            width={30}
-            height={30}
-            className="rounded-circle"
-          />
-        )),
+        members: project.members.slice(0, 3).map((member, index) =>{
+          return <Popover placement="top" title={'member'} content={(()=>{
+            return  <table className="table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Avatar</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {project.members?.map((item,index)=>{
+                  return <tr>
+                      <td>{item.userId}</td>
+                      <td><Avatar key={index} src={item.avatar}/></td>
+                      <td>{item.name}</td>
+                      <td>
+                        <button className="btn btn-danger" onClick={async()=>{
+                            const removeMem={
+                              projectId: project.id,
+                              userId:item.userId
+                            }
+                          try {
+                            const res = await http.post(
+                              "/api/Project/removeUserFromProject",removeMem
+                            );
+                              console.log(res)
+                            alert("Xóa Thành Công ");
+                            window.location.reload();
+                          } catch (err) {
+                            alert("Xóa Thất Bại !!!!");
+                            console.log(err)
+                          }
+                        }}>X</button>
+                      </td>
+                  </tr>
+                })}
+              </tbody>
+            </table>
+          })} trigger="hover">
+          <Avatar key={index} src={member.avatar}/>
+        </Popover>
+        } 
+          
+        ),
         description: project.description,
       }));
       convertedData.forEach((data: any) => {
