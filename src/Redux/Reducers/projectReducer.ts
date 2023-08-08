@@ -2,6 +2,7 @@ import { notification } from "antd";
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { http } from "../../Util/Config";
 import { AxiosResponse } from "axios";
+import { DispatchType } from "../configStore";
 export type NotificationType = "success" | "info" | "warning" | "error";
 const initialState: ProjectState = {
   arrProject: [],
@@ -13,6 +14,22 @@ const initialState: ProjectState = {
   notificationType: null,
   deleteSuccessMessage: "",
   updateSuccessMessage: "",
+  ProjectDetail:{
+    members:[],
+    creator:{
+      id: 0,
+      name:'',
+    },
+    id:0,
+    projectName:'',
+    description:'',
+    alias:'',
+    projectCategory:{
+      id:0,
+      name:''
+    },
+    lstTask:[]
+  },
 };
 export interface ProjectUpdate {
   id: number;
@@ -32,6 +49,11 @@ export interface TypeProject {
   alias: string;
   deleted: boolean;
 }
+export interface ProjectDetail extends Omit<TypeProject,'deleted'|'categoryId'|'categoryName'>{
+  projectCategory:Catagory,
+  lstTask: LstTask[],
+
+}
 export interface ProjectState {
   arrProject: TypeProject[];
   isDeletedSuccess: boolean;
@@ -42,6 +64,17 @@ export interface ProjectState {
   deleteSuccessMessage: string | null;
   updateSuccessMessage: string | null;
   projectUpdate: ProjectUpdate | null;
+  ProjectDetail: ProjectDetail
+}
+export interface LstTask {
+  alias: string
+  lstTaskDeTail: []
+  statusId: number
+  statusName: string
+}
+export interface Catagory{
+  id:number,
+  name:string
 }
 export interface Creator {
   id: number;
@@ -79,6 +112,14 @@ const projectReducer = createSlice({
     setDeleteSuccessMessage: (state, action: PayloadAction<string>) => {
       state.deleteSuccessMessage = action.payload;
     },
+    getProjectDetail: (
+      state: ProjectState,
+      action: PayloadAction<ProjectDetail>
+    ) => {
+      state.ProjectDetail = action.payload;
+
+    },
+
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -124,10 +165,20 @@ export const {
   setNotificationType,
   setDeleteSuccessMessage,
   resetIsUpdateSuccess,
+  getProjectDetail,
 } = projectReducer.actions;
 
 export default projectReducer.reducer;
 
+export const getProjectDetailApi = (keyword: string) => {
+  return async (dispatch: DispatchType) => {
+    const res = await http.get(`api/Project/getProjectDetail?id=${keyword}`);
+    console.log(res.data.content);
+    const action = getProjectDetail(res.data.content);
+    dispatch(action);
+
+  };
+};
 export const getAllProjectApi = createAsyncThunk(
   "project/getAllProjectApi",
   async () => {

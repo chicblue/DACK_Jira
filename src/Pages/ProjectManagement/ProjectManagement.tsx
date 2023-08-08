@@ -26,8 +26,9 @@ import {
 } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
-import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
+import { getUserApi } from "../../Redux/Reducers/createTaskReducer";
 import { number } from "yup";
+import { NavLink } from "react-router-dom";
 // import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
 
 interface DataType extends Omit<TypeProject, "creator"> {
@@ -183,15 +184,12 @@ export default function Home({ }: Props) {
   useEffect(() => {
     handleGetProject();
   }, [isDeletedSuccess]);
-  const { userSearch ,arrUser} = useSelector(
+  const {  arrUser} = useSelector(
     (state: RootState) => state.createTaskReducer
   );
   
   
-  const getDataUserSearch = async (value:string) => {
-    const actionUserSearch = getUserSearchApi(value);
-    dispatch(actionUserSearch);
-  }
+ 
 
   const getDataUser = async () => {
     const action: any = await getUserApi();
@@ -203,13 +201,13 @@ export default function Home({ }: Props) {
   const userOptions = arrUser.map((item, index) => {
     return { value: item.userId, label: item.name };
   });
- console.log(userSearch);
+ 
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
         key: index,
         id: project.id,
-        projectName: project.projectName,
+        projectName: <NavLink to={`/projectdetail/${project.id}`}>{project.projectName}</NavLink> ,
         categoryName: project.categoryName,
         creator: project.creator.name,
         members: project.members.slice(0, 3).map((member, index) =>{

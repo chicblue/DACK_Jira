@@ -33,7 +33,7 @@ export interface CreateTaskState {
   arrTaskType: TaskType[],
   arrPriority: Priority[],
   arrUser: User[],
-  userSearch: User[],
+  userProject: User[]|null,
   arrStatus:Status[]
 
 }
@@ -42,8 +42,8 @@ const initialState: CreateTaskState = {
   arrTaskType: [],
   arrPriority: [],
   arrUser: [],
-  userSearch: [],
-  arrStatus:[]
+  userProject: [],
+  arrStatus:[]||null
 }
 
 
@@ -69,11 +69,11 @@ const createTaskReducer = createSlice({
     ) => {
       state.arrUser = action.payload;
     },
-    getUserSearch: (
+    getUserProject: (
       state: CreateTaskState,
       action: PayloadAction<User[]>
     ) => {
-      state.userSearch = action.payload;
+      state.userProject = action.payload;
      
     },
     getStatus:(
@@ -87,7 +87,7 @@ const createTaskReducer = createSlice({
 
 });
 
-export const { getTaskType, getPriority,getUser,  getUserSearch,getStatus, } = createTaskReducer.actions
+export const { getTaskType, getPriority,getUser,  getUserProject,getStatus, } = createTaskReducer.actions
 
 export default createTaskReducer.reducer
 
@@ -131,11 +131,11 @@ export const getStatusIdApi = () => {
   };
 };
 //--------------
-export const getUserSearchApi = (keyword:string) => {
+export const getUserProjectApi = (keyword:string) => {
   return async (dispatch: DispatchType) => {
-    const res = await http.get(`api/Users/getUser?keyword=${keyword}`);
+    const res = await http.get(`/api/Users/getUserByProjectId?idProject=${keyword}`);
     console.log(res);
-    const action = getUserSearch(res.data.content);
+    const action = getUserProject(res.data.content);
     dispatch(action);
 
   };

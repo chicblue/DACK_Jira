@@ -43,6 +43,7 @@ root.render(
       <Route path='/indexjira' element={<IndexJira/>}></Route>
       <Route path='/createproject' element={<CreateProject/>}></Route>
       <Route path='/projectmanagement' element={<ProjectManagement/>}></Route>
+      <Route path='/projectdetail/:projectId' element={<IndexJira/>}></Route>
 
 
       

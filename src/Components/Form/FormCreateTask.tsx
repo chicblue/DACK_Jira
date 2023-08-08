@@ -12,6 +12,7 @@ import {
   getStatusIdApi,
   getTaskTypeApi,
   getUserApi,
+  getUserProjectApi,
   // getUserApi,
   Priority,
   Status,
@@ -49,10 +50,10 @@ export default function FormCreateTask({}: Props) {
   const { arrProject } = useSelector(
     (state: RootState) => state.projectReducer
   );
-  const { arrTaskType, arrPriority, arrUser,arrStatus } = useSelector(
+  const { arrTaskType, arrPriority, arrUser,arrStatus,userProject } = useSelector(
     (state: RootState) => state.createTaskReducer
   );
-  const userOptions = arrUser.map((item, index) => {
+  const userOptions = userProject.map((item, index) => {
     return { value: item.userId, label: item.name };
   });
 
@@ -119,7 +120,12 @@ export default function FormCreateTask({}: Props) {
         <select
           name="projectId"
           className="form-control"
-          onChange={createTaskFrm.handleChange}
+          onChange={(e)=>{
+              let {value} = e.target
+              const action =getUserProjectApi(value)
+              dispatch(action)
+            createTaskFrm.setFieldValue('projectId',e.target.value)
+          }}
         >
           {arrProject.map((project: TypeProject, index) => {
             const projectId = project.id as number;
