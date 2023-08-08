@@ -52,10 +52,10 @@ export default function FormCreateTask({}: Props) {
   const { arrTaskType, arrPriority, arrUser,arrStatus,userProject } = useSelector(
     (state: RootState) => state.createTaskReducer
   );
-  const userOptions = userProject.map((item, index) => {
+  const userOptions = userProject?.map((item, index) => {
     return { value: item.userId, label: item.name };
   });
-
+  console.log('arr',userProject)
   const handleChange = (value: string | string[]) => {
     createTaskFrm.setFieldValue("listUserAsign", value);
     console.log(value);
@@ -122,6 +122,7 @@ export default function FormCreateTask({}: Props) {
          
           onChange={(e)=>{
               let {value} = e.target
+              
               const action =getUserProjectApi(value)
               dispatch(action)
             createTaskFrm.setFieldValue('projectId',e.target.value)

@@ -43,7 +43,13 @@ const initialState: CreateTaskState = {
   arrPriority: [],
   arrUser: [],
   arrStatus:[],
-  userProject: [],
+  userProject: [
+    {userId: 0,
+      name:'',
+      avatar:'',
+      email:'',
+      phoneNumber:''
+    }],
 }
 
 
@@ -125,10 +131,13 @@ export const getUserApi = () => {
 // ----------------
 export const getUserProjectApi = (keyword) => {
   return async (dispatch: DispatchType) => {
-   
+    try{
     const res = await http.get(`api/Users/getUserByProjectId?idProject=${keyword}`);
     const action = getUserProject(res.data.content);
     dispatch(action);
+    }catch(err){
+      alert('Dự Án Chưa Có Thành Viên')
+    }
   };
 };
 // ----------
