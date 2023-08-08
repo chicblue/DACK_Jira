@@ -123,11 +123,12 @@ export default function FormEdit({}: Props) {
     const actionApi = categoryAsynAction();
     dispatch(actionApi);
   };
-  const handleEditorChange = (e: any) => {
-    editProjectFrm.setFieldValue("description", e.target.getContent());
+  const handleEditorChange = (content: string) => {
+    editProjectFrm.setFieldValue("description", content);
   };
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedCategoryId = parseInt(event.target.value, 10);
+    editProjectFrm.setFieldValue("categoryId", selectedCategoryId);
   };
   return (
     <form className="container-fuild" onSubmit={editProjectFrm.handleSubmit}>
@@ -150,7 +151,7 @@ export default function FormEdit({}: Props) {
               value={editProjectFrm.values.projectName}
               className="form-control"
               name="projectName"
-              onInput={editProjectFrm.handleChange}
+              onChange={editProjectFrm.handleChange}
             />
           </div>
         </div>
@@ -180,7 +181,7 @@ export default function FormEdit({}: Props) {
                 toolbar:
                   "undo redo | bold italic | alignleft aligncenter alignright | code",
               }}
-              onChange={handleEditorChange}
+              onEditorChange={handleEditorChange}
             />
           </div>
         </div>
