@@ -35,16 +35,15 @@ import {
 } from "../../Redux/Reducers/drawerReducers";
 import FormEdit from "../../Components/Form/FormEdit";
 import { http } from "../../Util/Config";
-import {
-  getUserSearchApi,
-  getUserApi,
-} from "../../Redux/Reducers/createTaskReducer";
 
-import { number } from "yup";
+
+
 import {
   displayLoading,
   hideLoading,
 } from "../../Redux/Reducers/loadingReducer";
+import { getUserApi } from "../../Redux/Reducers/createTaskReducer";
+import { number } from "yup";
 import { NavLink } from "react-router-dom";
 // import { getUserApi, getUserSearchApi } from "../../Redux/Reducers/createTaskReducer";
 
@@ -207,21 +206,20 @@ export default function Home({}: Props) {
   useEffect(() => {
     handleGetProject();
   }, [isDeletedSuccess]);
-  const { userSearch, arrUser } = useSelector(
+  const {  arrUser } = useSelector(
     (state: RootState) => state.createTaskReducer
   );
 
-  const getDataUserSearch = async (value: string) => {
-    const actionUserSearch = getUserSearchApi(value);
-    dispatch(actionUserSearch);
-  };
+  
+
+  
+  
+ 
 
   useEffect(() => {
     getDataUser();
   }, []);
-  const userOptions = arrUser.map((item, index) => {
-    return { value: item.userId, label: item.name };
-  });
+ 
   const getDataUser = async () => {
     const action: any = await getUserApi();
     dispatch(action);
@@ -229,13 +227,19 @@ export default function Home({}: Props) {
   useEffect(() => {
     getDataUser();
   }, []);
-  console.log(userSearch);
+ 
+ 
+  const userOptions = arrUser.map((item, index) => {
+    return { value: item.userId, label: item.name };
+  });
+ 
   useEffect(() => {
     if (arrProject.length > 0) {
       const convertedData: any = arrProject.map((project, index) => ({
         key: index,
         id: project.id,
-        projectName: project.projectName ,
+       
+        projectName: <NavLink to={`/projectdetail/${project.id}`}>{project.projectName}</NavLink> ,
         categoryName: project.categoryName,
         creator: project.creator.name,
        

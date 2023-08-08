@@ -33,18 +33,17 @@ export interface CreateTaskState {
   arrTaskType: TaskType[],
   arrPriority: Priority[],
   arrUser: User[],
-  userSearch: User[],
+  userProject: User[]|null,
   arrStatus:Status[]
-  arrUserProject:User[]
+  
 }
 
 const initialState: CreateTaskState = {
   arrTaskType: [],
   arrPriority: [],
   arrUser: [],
-  userSearch: [],
   arrStatus:[],
-  arrUserProject:[]
+  userProject: [],
 }
 
 
@@ -70,11 +69,11 @@ const createTaskReducer = createSlice({
     ) => {
       state.arrUser = action.payload;
     },
-    getUserSearch: (
+    getUserProject: (
       state: CreateTaskState,
       action: PayloadAction<User[]>
     ) => {
-      state.userSearch = action.payload;
+      state.userProject = action.payload;
      
     },
     getStatus:(
@@ -84,18 +83,12 @@ const createTaskReducer = createSlice({
       state.arrStatus=action.payload
      
     },
-    getUserProject: (
-      state: CreateTaskState,
-      action: PayloadAction<User[]>
-    ) => {
-      state.arrUserProject = action.payload;
-     
-    },
+   
   },
 
 });
 
-export const { getTaskType, getPriority,getUser,  getUserSearch,getStatus ,getUserProject} = createTaskReducer.actions
+export const { getTaskType, getPriority,getUser, getStatus ,getUserProject} = createTaskReducer.actions
 
 export default createTaskReducer.reducer
 
@@ -148,15 +141,7 @@ export const getStatusIdApi = () => {
   };
 };
 //--------------
-export const getUserSearchApi = (keyword:string) => {
-  return async (dispatch: DispatchType) => {
-    const res = await http.get(`api/Users/getUser?keyword=${keyword}`);
-    console.log(res);
-    const action = getUserSearch(res.data.content);
-    dispatch(action);
 
-  };
-};
 //   ----------------create task action-------
 export const createTaskAsynAction = createAsyncThunk(
   "createTaskAsynAction",

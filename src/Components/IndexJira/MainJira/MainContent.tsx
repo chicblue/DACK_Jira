@@ -1,13 +1,19 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../Redux/configStore';
 
 type Props = {}
 
 export default function MainContent({ }: Props) {
-  return (
-    <div className="content" style={{ display: 'flex' }}>
-      <div className="card" style={{ width: '17rem', height: '25rem' }}>
+
+  const {ProjectDetail}=useSelector((state:RootState)=>state.projectReducer);
+
+  const renderCardTaskList = ()=>{
+    return ProjectDetail.lstTask?.map((task,index)=>{
+      return <>
+      <div key={index} className="card" style={{ width: '17rem', height: '25rem' }}>
         <div className="card-header">
-          BACKLOG 3
+         {task.statusName}
         </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item" data-toggle="modal" data-target="#infoModal" style={{ cursor: 'pointer' }}>
@@ -57,36 +63,18 @@ export default function MainContent({ }: Props) {
           
         </ul>
       </div>
-      <div className="card" style={{ width: '17rem', height: '25rem' }}>
-        <div className="card-header">
-          SELECTED FOR DEVELOPMENT 2
-        </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">Cras justo odio</li>
-          <li className="list-group-item">Dapibus ac facilisis in</li>
-        </ul>
-      </div>
-      <div className="card" style={{ width: '17rem', height: '25rem' }}>
-        <div className="card-header">
-          IN PROGRESS 2
-        </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">Cras justo odio</li>
-          <li className="list-group-item">Dapibus ac facilisis in</li>
-        </ul>
-      </div>
-      <div className="card" style={{ width: '17rem', height: '25rem' }}>
-        <div className="card-header">
-          DONE 3
-        </div>
-        <ul className="list-group list-group-flush">
-          <li className="list-group-item">Cras justo odio</li>
-          <li className="list-group-item">Dapibus ac facilisis in</li>
-          <li className="list-group-item">Vestibulum at eros</li>
-        </ul>
-      </div>
-    </div>
+   
+      </>
+      
+    })
+  }
 
+
+
+  return (
+    <div className="content" style={{ display: 'flex' }}>
+      {renderCardTaskList()}
+    </div>
   )
 }
 

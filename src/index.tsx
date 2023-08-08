@@ -38,6 +38,7 @@ root.render(
           <Route path="" element={<Login />}></Route>
           <Route path="/login" element={<Login />}></Route>
 
+<<<<<<< HEAD
           <Route path="/register" element={<Register />}></Route>
         </Route>
         <Route path="" element={<JiRaTemplate />}>
@@ -51,4 +52,23 @@ root.render(
       </Routes>
     </HistoryRouter>
   </Provider>
+=======
+        <Route path='/register' element={<Register/>}></Route>
+    </Route>
+    <Route path='' element ={<JiRaTemplate/>}>
+      <Route path='/indexjira' element={<IndexJira/>}></Route>
+      <Route path='/createproject' element={<CreateProject/>}></Route>
+      <Route path='/projectmanagement' element={<ProjectManagement/>}></Route>
+      <Route path='/projectdetail/:projectId' element={<IndexJira/>}></Route>
+
+
+      
+
+    </Route>
+ 
+  
+  </Routes>
+</HistoryRouter>
+</Provider>
+>>>>>>> 1383ccd886d5633fc906725cda0a33126ee58fd3
 );
